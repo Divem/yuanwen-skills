@@ -1,28 +1,56 @@
 ---
 name: skill-backup
-description: 备份自定义 Skills 到指定目录。当用户说"备份 skill"、"备份技能"、"导出 skill"时触发。
+description: 备份、同步和恢复自定义 Skills。当用户说"备份 skill"、"备份技能"、"导出 skill"、"sync skills"、"归档 skill"、"恢复 skill"时触发。支持备份全部自建 skill 或指定 skill。
 ---
 
 # Skill Backup
 
-备份 Claude Code 自定义 skills 到指定目录。
+备份、同步和恢复 Claude Code 自定义 skills。
 
 ## 工作流
 
-1. **扫描源目录** `~/.claude/skills/`，列出所有自定义 skill 名称（排除 `superpowers:` 前缀的内置 skill）
+### 备份模式（默认）
+
+1. **扫描源目录** `~/.claude/skills/`，识别自建 skill：
+   - 排除 `superpowers:` 前缀的内置 skill
+   - 排除 npm 安装的第三方 skill（目录下含 `node_modules` 或 `package.json`）
+   - 如果用户指定了具体 skill 名称，只处理匹配的
 2. **向用户确认**以下信息：
-   - 备份哪些 skill（默认全部）
+   - 备份哪些 skill（列出识别到的自建 skill，默认全部）
    - 目标目录路径（默认 `~/Documents/coder/skills_backup`）
-3. 用户确认后，执行备份：将每个 skill 的完整目录（包含 SKILL.md、scripts/、references/、assets/ 等）复制到目标目录
-4. 输出备份结果摘要
+3. 用户确认后，逐个检查并备份：
+   - 目标不存在 → 复制
+   - 目标已存在且源更新过 → 覆盖并提示
+   - 目标已存在且无变化 → 跳过
+4. 输出备份结果：成功 / 跳过 / 失败数量及清单
+
+### 恢复模式
+
+1. 扫描备份目录，列出可恢复的 skill
+2. 向用户确认要恢复哪些
+3. 复制到 `~/.claude/skills/`（已存在则跳过，不覆盖）
+
+## 判断用户意图
+
+- 说"备份/sync/归档/导出 skill" → 备份模式
+- 说"恢复/还原 skill" → 恢复模式
+- 说"备份 xxx skill" → 备份模式，仅处理指定 skill
+
+## 增量同步逻辑
+
+```bash
+# 检查是否需要更新：对比源和目标的修改时间
+if [ "$SRC_DIR" -nt "$DST_DIR" ]; then
+  cp -r "$SRC_DIR" "$DST_PARENT/"
+fi
+```
 
 ## 备份命令
 
 ```bash
+# 备份单个
 cp -r ~/.claude/skills/<skill-name> <target-dir>/
+
+# 增量备份（仅源更新时覆盖）
+[ ~/.claude/skills/<skill-name> -nt <target-dir>/<skill-name> ] && cp -r ~/.claude/skills/<skill-name> <target-dir>/
 ```
-
-## 注意事项
-
-- 如果目标已存在同名 skill，跳过并提示用户（不覆盖）
-- 备份完成后列出成功/跳过的 skill 清单
