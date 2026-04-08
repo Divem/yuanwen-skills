@@ -36,21 +36,24 @@ description: 备份、同步和恢复自定义 Skills。当用户说"备份 skil
 - 说"恢复/还原 skill" → 恢复模式
 - 说"备份 xxx skill" → 备份模式，仅处理指定 skill
 
-## 增量同步逻辑
+## 变更检测逻辑
+
+用 `diff -rq` 对比源和目标的文件内容，而非目录时间戳（macOS 修改文件不更新目录 mtime）：
 
 ```bash
-# 检查是否需要更新：对比源和目标的修改时间
-if [ "$SRC_DIR" -nt "$DST_DIR" ]; then
-  cp -r "$SRC_DIR" "$DST_PARENT/"
+# 检测是否有变化
+if diff -rq ~/.claude/skills/<skill-name> <target-dir>/<skill-name> > /dev/null 2>&1; then
+  echo "SKIP: 无变化"
+else
+  rm -rf <target-dir>/<skill-name>
+  cp -r ~/.claude/skills/<skill-name> <target-dir>/
+  echo "OK: 已更新"
 fi
 ```
 
 ## 备份命令
 
 ```bash
-# 备份单个
+# 全量备份（目标不存在时）
 cp -r ~/.claude/skills/<skill-name> <target-dir>/
-
-# 增量备份（仅源更新时覆盖）
-[ ~/.claude/skills/<skill-name> -nt <target-dir>/<skill-name> ] && cp -r ~/.claude/skills/<skill-name> <target-dir>/
 ```
