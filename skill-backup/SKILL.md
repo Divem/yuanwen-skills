@@ -17,7 +17,7 @@ description: 备份、同步和恢复自定义 Skills。当用户说"备份 skil
    - 如果用户指定了具体 skill 名称，只处理匹配的
 2. **向用户确认**以下信息：
    - 备份哪些 skill（列出识别到的自建 skill，默认全部）
-   - 目标目录路径（默认 `~/Documents/coder/skills_backup`）
+   - 目标目录路径（默认 `~/Documents/coder/yuanwen-skills`）
 3. 用户确认后，逐个检查并备份：
    - 目标不存在 → 复制
    - 目标已存在且源更新过 → 覆盖并提示
