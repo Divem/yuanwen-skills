@@ -1,0 +1,14 @@
+<view class="orders-page">
+  <view wx:if="{{loading}}" class="loading"><text>加载中...</text></view>
+  <view wx:elif="{{orders.length > 0}}" class="order-list">
+    <view class="order-item" wx:for="{{orders}}" wx:key="_id" data-id="{{item._id}}" bindtap="goToDetail">
+      <image class="order-cover" src="{{item.coverImage}}" mode="aspectFill" />
+      <view class="order-info">
+        <text class="order-name">{{item.vegName}} · {{item.ownerName}}</text>
+        <text class="order-meta">{{item.code}} · {{item.planType === 'trial' ? '尝鲜装' : '季度装'}}</text>
+        <view class="order-bottom"><text class="order-price">¥{{item.price}}</text><text class="order-status">{{item.statusLabel}}</text></view>
+      </view>
+    </view>
+  </view>
+  <view wx:else class="empty"><text>暂无订单</text></view>
+</view>
