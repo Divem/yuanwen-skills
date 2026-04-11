@@ -1,0 +1,29 @@
+<view class="workbench">
+  <view class="stats-bar">
+    <view class="stat-item"><text class="stat-num">{{todayStats.pending}}</text><text class="stat-label">待拍照</text></view>
+    <view class="stat-item"><text class="stat-num done">{{todayStats.done}}</text><text class="stat-label">已完成</text></view>
+    <view class="stat-item" wx:if="{{todayStats.newOrders > 0}}"><text class="stat-num warn">{{todayStats.newOrders}}</text><text class="stat-label">新订单</text></view>
+  </view>
+  <view class="section" wx:if="{{newOrders.length > 0}}">
+    <text class="section-title">新订单</text>
+    <view class="order-item" wx:for="{{newOrders}}" wx:key="_id">
+      <view class="order-info">
+        <text class="order-name">{{item.ownerName}}</text>
+        <text class="order-code">{{item.code}} · {{item.planType === 'trial' ? '尝鲜装' : '季度装'}}</text>
+      </view>
+      <button class="confirm-btn" data-id="{{item._id}}" bindtap="confirmOrder">确认播种</button>
+    </view>
+  </view>
+  <view class="section">
+    <text class="section-title">待拍照 ({{pendingPhotos.length}})</text>
+    <view class="photo-item" wx:for="{{pendingPhotos}}" wx:key="_id" data-id="{{item._id}}" bindtap="goToPhoto">
+      <view class="photo-info">
+        <text class="photo-veg">{{item.vegName}}</text>
+        <text class="photo-owner">{{item.ownerName}} · {{item.code}}</text>
+      </view>
+      <text class="photo-arrow">📷</text>
+    </view>
+    <view class="empty-section" wx:if="{{pendingPhotos.length === 0 && !loading}}"><text>今天的拍照任务都完成了 👍</text></view>
+  </view>
+</view>
+<farmer-tabbar active="{{0}}" />
