@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>种点什么 · 城市人的云端菜园</title>
+<style>
+  :root{
+    --bg:#0a1a0e;
+    --soil:#3a2618;
+    --leaf:#7fc66a;
+    --leaf-dark:#3d7a3a;
+    --gold:#f4d35e;
+    --cream:#f7f4ea;
+    --ink:#0d1f12;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--cream);font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  #bg-canvas{position:fixed;inset:0;width:100vw;height:100vh;z-index:0}
+  .overlay{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,transparent 0%,rgba(10,26,14,.6) 100%);z-index:1}
+  main{position:relative;z-index:2}
+  section{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:8vh 6vw;position:relative}
+  .panel{max-width:880px;width:100%}
+  .eyebrow{font-size:13px;letter-spacing:.4em;color:var(--leaf);text-transform:uppercase;margin-bottom:24px;opacity:0;transform:translateY(20px)}
+  h1{font-size:clamp(48px,8vw,120px);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:24px;opacity:0;transform:translateY(40px)}
+  h1 .accent{color:var(--gold);font-style:italic}
+  h2{font-size:clamp(32px,5vw,64px);font-weight:700;line-height:1.15;margin-bottom:32px;opacity:0;transform:translateY(40px)}
+  h2 .accent{color:var(--leaf);}
+  p.lead{font-size:clamp(16px,1.8vw,22px);line-height:1.7;color:rgba(247,244,234,.82);max-width:680px;opacity:0;transform:translateY(30px)}
+  .hero-sub{font-size:clamp(18px,2vw,26px);color:rgba(247,244,234,.7);margin-bottom:48px;opacity:0;transform:translateY(30px)}
+  .meta{margin-top:56px;font-size:13px;letter-spacing:.2em;color:rgba(247,244,234,.4);opacity:0}
+  .scroll-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-size:12px;letter-spacing:.3em;color:rgba(247,244,234,.5);opacity:0}
+  .scroll-hint::after{content:"";display:block;width:1px;height:40px;background:linear-gradient(to bottom,var(--leaf),transparent);margin:12px auto 0;animation:drip 2s ease-in-out infinite}
+  @keyframes drip{0%,100%{transform:scaleY(.3);opacity:.3}50%{transform:scaleY(1);opacity:1}}
+
+  .grid{display:grid;gap:20px;margin-top:40px}
+  .grid-2{grid-template-columns:repeat(2,1fr)}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:720px){.grid-2,.grid-3{grid-template-columns:1fr}}
+  .card{background:rgba(247,244,234,.04);backdrop-filter:blur(10px);border:1px solid rgba(127,198,106,.15);border-radius:16px;padding:28px;opacity:0;transform:translateY(30px) scale(.95);transition:border-color .3s}
+  .card:hover{border-color:rgba(127,198,106,.45)}
+  .card .num{font-size:13px;color:var(--leaf);letter-spacing:.2em;margin-bottom:12px}
+  .card h3{font-size:22px;margin-bottom:10px;font-weight:600}
+  .card p{font-size:14px;line-height:1.65;color:rgba(247,244,234,.7)}
+  .card .price{font-size:32px;color:var(--gold);font-weight:700;margin-top:14px}
+  .card .price small{font-size:13px;color:rgba(247,244,234,.5);font-weight:400}
+
+  .stat-row{display:flex;flex-wrap:wrap;gap:48px;margin-top:48px}
+  .stat{opacity:0;transform:translateY(30px)}
+  .stat .big{font-size:clamp(48px,7vw,88px);font-weight:800;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums}
+  .stat .label{font-size:13px;letter-spacing:.2em;color:rgba(247,244,234,.6);margin-top:8px;text-transform:uppercase}
+
+  .timeline{margin-top:48px;position:relative;padding-left:32px;border-left:1px dashed rgba(127,198,106,.3)}
+  .timeline-item{margin-bottom:48px;opacity:0;transform:translateX(-30px);position:relative}
+  .timeline-item::before{content:"";position:absolute;left:-40px;top:6px;width:14px;height:14px;border-radius:50%;background:var(--leaf);box-shadow:0 0 0 6px rgba(127,198,106,.15)}
+  .timeline-item .phase{font-size:12px;letter-spacing:.3em;color:var(--leaf);text-transform:uppercase;margin-bottom:8px}
+  .timeline-item h3{font-size:24px;margin-bottom:10px;font-weight:600}
+  .timeline-item p{font-size:15px;line-height:1.7;color:rgba(247,244,234,.7);max-width:600px}
+
+  .end{text-align:center}
+  .end h2{font-size:clamp(28px,4vw,48px);font-weight:400;font-style:italic;line-height:1.6;color:rgba(247,244,234,.85)}
+  .end .signature{margin-top:48px;font-size:13px;letter-spacing:.3em;color:var(--leaf);opacity:0}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div class="overlay"></div>
+
+<main>
+
+  <section data-scene="hero">
+    <div class="panel">
+      <div class="eyebrow">2026 · 项目计划书</div>
+      <h1>种点<span class="accent">什么</span><br/>城市人的云端菜园</h1>
+      <p class="hero-sub">认养一棵菜，留住一段田园时光</p>
+      <div class="meta">内部机密 · 仅供评估</div>
+    </div>
+    <div class="scroll-hint">向下滚动</div>
+  </section>
+
+  <section data-scene="value">
+    <div class="panel">
+      <div class="eyebrow">核心价值</div>
+      <h2>我们卖的不是菜<br/>是<span class="accent">联结土地的情感</span></h2>
+      <p class="lead">用户通过 APP "认养一棵菜"或"认养一片土地"，专业团队代为种植和管护。每棵菜都被编号、署名，每日拍照推送，完整记录从播种到收获的成长全过程。</p>
+    </div>
+  </section>
+
+  <section data-scene="market">
+    <div class="panel">
+      <div class="eyebrow">市场洞察</div>
+      <h2>城市离土地越远<br/>对田园的<span class="accent">渴望就越深</span></h2>
+      <p class="lead">食品安全焦虑、健康饮食意识、自然教育需求——三股力量正在城市家庭中汇聚成一个全新的消费场景。</p>
+      <div class="grid grid-3">
+        <div class="card"><div class="num">01 / 白领家庭</div><h3>亲子 · 健康</h3><p>28-45 岁，付费意愿最高，追求可溯源的食材与亲子陪伴时光。</p></div>
+        <div class="card"><div class="num">02 / 教育机构</div><h3>自然 · 劳动</h3><p>中小学与幼儿园，自然教育已纳入国家课程体系，B 端复购稳定。</p></div>
+        <div class="card"><div class="num">03 / 企业团建</div><h3>团队 · 品牌</h3><p>企业定制公司菜园，作为团建活动与员工福利的全新载体。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="product">
+    <div class="panel">
+      <div class="eyebrow">产品体验</div>
+      <h2>每日一图<br/><span class="accent">把田园装进口袋</span></h2>
+      <p class="lead">"一菜一码"的专属页面、"每日一图"的成长推送、"成长时光机"的自动剪辑，让每一次打开 APP 都是一次温柔的田园探访。</p>
+      <div class="grid grid-2">
+        <div class="card"><div class="num">P0</div><h3>认养商城</h3><p>浏览菜品 / 土地，选择套餐，在线支付一键认养。</p></div>
+        <div class="card"><div class="num">P0</div><h3>我的菜园</h3><p>每日图片推送、成长时间线、专属署名牌展示。</p></div>
+        <div class="card"><div class="num">P1</div><h3>菜园直播</h3><p>固定摄像头实时画面，随时查看你的土地。</p></div>
+        <div class="card"><div class="num">P0</div><h3>参观预约</h3><p>线上预约菜园参观、采摘体验、亲子活动。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="pricing">
+    <div class="panel">
+      <div class="eyebrow">认养套餐</div>
+      <h2>从一棵菜<br/>到<span class="accent">一片田</span></h2>
+      <div class="grid grid-3">
+        <div class="card"><div class="num">尝鲜装 · 1个月</div><h3>一棵菜</h3><p>含每日拍照 + 专属署名牌</p><div class="price">¥39</div></div>
+        <div class="card"><div class="num">家庭装 · 6个月</div><h3>一片土 5㎡</h3><p>自选菜品，全流程服务</p><div class="price">¥399</div></div>
+        <div class="card"><div class="num">年卡装 · 12个月</div><h3>一片土 10㎡</h3><p>四季轮种，含 4 次参观</p><div class="price">¥1299</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="finance">
+    <div class="panel">
+      <div class="eyebrow">财务预测</div>
+      <h2>三年时间<br/>从种子到<span class="accent">规模化收成</span></h2>
+      <div class="stat-row">
+        <div class="stat"><div class="big" data-count="8000">0</div><div class="label">第3年认养用户</div></div>
+        <div class="stat"><div class="big" data-count="530" data-suffix="万">0</div><div class="label">第3年总收入</div></div>
+        <div class="stat"><div class="big" data-count="55" data-suffix="%">0</div><div class="label">第3年毛利率</div></div>
+      </div>
+      <p class="lead" style="margin-top:48px">初始投资 29-55 万元，建议预留 30% 流动资金。第一年验证模式，第二年扩张渠道，第三年开放城市合伙人。</p>
+    </div>
+  </section>
+
+  <section data-scene="roadmap">
+    <div class="panel">
+      <div class="eyebrow">发展路线</div>
+      <h2>三个阶段<br/>三次<span class="accent">破土生长</span></h2>
+      <div class="timeline">
+        <div class="timeline-item"><div class="phase">Phase 01 · 0-6 个月</div><h3>MVP 验证期</h3><p>选址城郊 3-5 亩土地，搭建基础设施；上线小程序 MVP；招募前 100 名种子用户。</p></div>
+        <div class="timeline-item"><div class="phase">Phase 02 · 6-18 个月</div><h3>扩张期</h3><p>开发原生 APP，完善直播、社区与教育内容；拓展学校与幼儿园 B 端渠道；探索异地复制。</p></div>
+        <div class="timeline-item"><div class="phase">Phase 03 · 18-36 个月</div><h3>规模化</h3><p>开放"城市合伙人"模式，输出品牌、技术与运营体系；扩展认养果树、认养小动物等品类。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="end">
+    <div class="panel end">
+      <h2>"当一个城市家庭打开手机<br/>看到自己认养的那棵菜<br/>又长高了一点点——<br/>心中涌起的温暖<br/>就是我们创业的初心。"</h2>
+      <div class="signature">— 种点什么 · 2026</div>
+    </div>
+  </section>
+
+</main>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+<script type="module">
+import * as THREE from 'three';
+gsap.registerPlugin(ScrollTrigger);
+
+/* ============ Three.js 背景:粒子菜园 + 漂浮叶片 ============ */
+const canvas = document.getElementById('bg-canvas');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a1a0e, 0.04);
+
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 200);
+camera.position.set(0, 2, 14);
+
+/* 灯光 */
+scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+const sun = new THREE.DirectionalLight(0xfff2c8, 1.2);
+sun.position.set(8, 12, 6);
+scene.add(sun);
+const rim = new THREE.DirectionalLight(0x7fc66a, 0.6);
+rim.position.set(-6, 4, -4);
+scene.add(rim);
+
+/* 中心:种子→幼苗→大树 (用程序化生成的几何) */
+const plantGroup = new THREE.Group();
+scene.add(plantGroup);
+
+// 茎
+const stemMat = new THREE.MeshStandardMaterial({color:0x4a7a3a, roughness:.7});
+const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.12,3,8), stemMat);
+stem.position.y = 1.5;
+stem.scale.y = 0.01;
+plantGroup.add(stem);
+
+// 叶子(多个三角面片)
+const leafMat = new THREE.MeshStandardMaterial({color:0x7fc66a, roughness:.5, side:THREE.DoubleSide, transparent:true, opacity:.95});
+const leaves = [];
+for(let i=0;i<14;i++){
+  const g = new THREE.BufferGeometry();
+  const verts = new Float32Array([
+    0,0,0,
+    0.6,0.4,0,
+    1.2,0,0,
+    0.6,-0.3,0
+  ]);
+  g.setAttribute('position', new THREE.BufferAttribute(verts,3));
+  g.setIndex([0,1,2, 0,2,3]);
+  g.computeVertexNormals();
+  const leaf = new THREE.Mesh(g, leafMat);
+  const ang = (i/14)*Math.PI*2;
+  const h = 0.8 + i*0.18;
+  leaf.position.set(Math.cos(ang)*0.15, h, Math.sin(ang)*0.15);
+  leaf.rotation.y = ang;
+  leaf.rotation.z = -0.3 + Math.random()*0.2;
+  const s = 0.4 + Math.random()*0.4;
+  leaf.scale.set(s,s,s);
+  leaf.userData.baseY = h;
+  leaf.userData.phase = Math.random()*Math.PI*2;
+  leaf.scale.multiplyScalar(0.01);
+  plantGroup.add(leaf);
+  leaves.push(leaf);
+}
+
+// 顶部花/果实
+const fruitMat = new THREE.MeshStandardMaterial({color:0xf4d35e, emissive:0xf4d35e, emissiveIntensity:.3, roughness:.4});
+const fruit = new THREE.Mesh(new THREE.IcosahedronGeometry(0.35,1), fruitMat);
+fruit.position.y = 3.3;
+fruit.scale.set(0.01,0.01,0.01);
+plantGroup.add(fruit);
+
+/* 土壤平面 */
+const soilGeo = new THREE.CircleGeometry(8, 48);
+const soilMat = new THREE.MeshStandardMaterial({color:0x2a1810, roughness:.95});
+const soil = new THREE.Mesh(soilGeo, soilMat);
+soil.rotation.x = -Math.PI/2;
+soil.position.y = 0;
+scene.add(soil);
+
+/* 漂浮粒子(花粉/光斑) */
+const pCount = 800;
+const pGeo = new THREE.BufferGeometry();
+const pPos = new Float32Array(pCount*3);
+const pSpeed = [];
+for(let i=0;i<pCount;i++){
+  pPos[i*3]   = (Math.random()-.5)*40;
+  pPos[i*3+1] = Math.random()*15;
+  pPos[i*3+2] = (Math.random()-.5)*30;
+  pSpeed.push(0.002 + Math.random()*0.008);
+}
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos,3));
+const pMat = new THREE.PointsMaterial({
+  color:0xf4d35e, size:0.06, transparent:true, opacity:.7,
+  blending:THREE.AdditiveBlending, depthWrite:false
+});
+const particles = new THREE.Points(pGeo, pMat);
+scene.add(particles);
+
+/* 远景小草丛 */
+const grassGroup = new THREE.Group();
+for(let i=0;i<60;i++){
+  const blade = new THREE.Mesh(
+    new THREE.ConeGeometry(0.08,0.6,4),
+    new THREE.MeshStandardMaterial({color:0x3d7a3a + Math.random()*0x111100, roughness:.8})
+  );
+  const r = 4 + Math.random()*5;
+  const a = Math.random()*Math.PI*2;
+  blade.position.set(Math.cos(a)*r, 0.3, Math.sin(a)*r);
+  blade.rotation.z = (Math.random()-.5)*0.3;
+  grassGroup.add(blade);
+}
+scene.add(grassGroup);
+
+/* ============ 渲染循环 ============ */
+const clock = new THREE.Clock();
+function animate(){
+  const t = clock.getElapsedTime();
+  // 叶子轻微摆动
+  leaves.forEach(l=>{
+    l.rotation.z = -0.3 + Math.sin(t*1.5 + l.userData.phase)*0.15;
+  });
+  // 果实轻浮
+  fruit.position.y = 3.3 + Math.sin(t*1.2)*0.08;
+  fruit.rotation.y = t*0.5;
+  // 粒子上升
+  const pos = pGeo.attributes.position.array;
+  for(let i=0;i<pCount;i++){
+    pos[i*3+1] += pSpeed[i];
+    if(pos[i*3+1]>15) pos[i*3+1] = 0;
+  }
+  pGeo.attributes.position.needsUpdate = true;
+  // 粒子整体缓慢飘
+  particles.rotation.y = t*0.02;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+animate();
+
+window.addEventListener('resize', ()=>{
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* ============ GSAP: 入场动画 ============ */
+const tl0 = gsap.timeline();
+tl0.to('[data-scene="hero"] .eyebrow',{opacity:1,y:0,duration:1,ease:'power3.out'})
+   .to('[data-scene="hero"] h1',{opacity:1,y:0,duration:1.2,ease:'power3.out'},'-=.6')
+   .to('[data-scene="hero"] .hero-sub',{opacity:1,y:0,duration:1,ease:'power3.out'},'-=.7')
+   .to('[data-scene="hero"] .meta',{opacity:1,duration:1},'-=.5')
+   .to('.scroll-hint',{opacity:1,duration:1},'-=.3');
+
+// 植物生长(随着第一屏滚动出场)
+gsap.to(stem.scale,{y:1,duration:2.5,ease:'power2.out',delay:.5});
+gsap.to(plantGroup.position,{y:0,duration:2,ease:'power2.out'});
+leaves.forEach((l,i)=>{
+  gsap.to(l.scale,{x:1,y:1,z:1,duration:1.2,ease:'back.out(1.6)',delay:.8+i*0.06});
+});
+gsap.to(fruit.scale,{x:1,y:1,z:1,duration:1.2,ease:'elastic.out(1,.5)',delay:2.4});
+
+/* ============ ScrollTrigger: 各 section 文字入场 ============ */
+gsap.utils.toArray('section').forEach((sec, idx)=>{
+  if(idx===0) return;
+  const targets = sec.querySelectorAll('.eyebrow, h2, .lead, .card, .stat, .timeline-item, .signature');
+  gsap.to(targets,{
+    opacity:1, x:0, y:0, scale:1,
+    duration:1, stagger:0.1, ease:'power3.out',
+    scrollTrigger:{trigger:sec, start:'top 70%'}
+  });
+});
+
+/* 数字滚动 */
+gsap.utils.toArray('.stat .big').forEach(el=>{
+  const target = +el.dataset.count;
+  const suffix = el.dataset.suffix || '';
+  const obj = {v:0};
+  ScrollTrigger.create({
+    trigger:el, start:'top 80%',
+    onEnter:()=>{
+      gsap.to(obj,{v:target,duration:2,ease:'power2.out',onUpdate:()=>{
+        el.textContent = Math.round(obj.v) + suffix;
+      }});
+    }
+  });
+});
+
+/* ============ 相机随滚动移动 ============ */
+gsap.timeline({
+  scrollTrigger:{
+    trigger:'main',
+    start:'top top',
+    end:'bottom bottom',
+    scrub:1
+  }
+})
+.to(camera.position,{x:-3,y:3,z:12},0)
+.to(camera.position,{x:4,y:4,z:10},.15)
+.to(camera.position,{x:-4,y:5,z:13},.3)
+.to(camera.position,{x:5,y:3,z:9},.45)
+.to(camera.position,{x:-2,y:6,z:14},.6)
+.to(camera.position,{x:3,y:4,z:11},.75)
+.to(camera.position,{x:0,y:5,z:15},.9)
+.to(plantGroup.rotation,{y:Math.PI*1.5},0);
+
+// 相机始终看向植物
+const lookTarget = new THREE.Vector3(0,2,0);
+const origRender = renderer.render.bind(renderer);
+function loop(){ camera.lookAt(lookTarget); requestAnimationFrame(loop); }
+loop();
+</script>
+</body>
+</html>

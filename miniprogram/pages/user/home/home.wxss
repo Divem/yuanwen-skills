@@ -1,0 +1,17 @@
+.home { padding-bottom: 20rpx; }
+.banner {
+  background: linear-gradient(135deg, #4CAF50, #81C784);
+  padding: 60rpx 32rpx;
+  color: #fff;
+}
+.banner-title { font-size: 48rpx; font-weight: bold; display: block; }
+.banner-slogan { font-size: 26rpx; margin-top: 12rpx; display: block; opacity: 0.9; }
+.section-title {
+  font-size: 32rpx; font-weight: bold;
+  padding: 32rpx 32rpx 16rpx;
+}
+.veg-list { padding: 0 32rpx; }
+.empty, .loading {
+  text-align: center; padding: 100rpx 0;
+  color: #999; font-size: 28rpx;
+}

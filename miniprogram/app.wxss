@@ -1,0 +1,14 @@
+page {
+  --color-primary: #4CAF50;
+  --color-primary-light: #E8F5E9;
+  --color-farmer: #E91E63;
+  --color-farmer-light: #FCE4EC;
+  --color-text: #333333;
+  --color-text-secondary: #999999;
+  --color-border: #EEEEEE;
+  --color-bg: #F5F5F5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 28rpx;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}

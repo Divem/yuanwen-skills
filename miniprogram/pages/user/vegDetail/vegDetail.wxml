@@ -1,0 +1,62 @@
+<view class="detail" wx:if="{{veg}}">
+  <image class="detail-cover" src="{{veg.coverImage}}" mode="aspectFill" />
+
+  <view class="detail-body">
+    <text class="detail-name">{{veg.name}}</text>
+    <text class="detail-desc">{{veg.desc}}</text>
+
+    <view class="section">
+      <text class="section-label">种植说明</text>
+      <text class="section-text">{{veg.growthInfo}}</text>
+    </view>
+
+    <view class="section">
+      <text class="section-label">选择套餐</text>
+      <view class="plan-options">
+        <view
+          class="plan-item {{planType === 'trial' ? 'active' : ''}}"
+          data-plan="trial"
+          bindtap="onPlanChange"
+        >
+          <text class="plan-name">尝鲜装</text>
+          <text class="plan-price">¥{{veg.price.trial}}</text>
+          <text class="plan-duration">{{veg.duration.trial}} 天</text>
+        </view>
+        <view
+          class="plan-item {{planType === 'quarterly' ? 'active' : ''}}"
+          data-plan="quarterly"
+          bindtap="onPlanChange"
+        >
+          <text class="plan-name">季度装</text>
+          <text class="plan-price">¥{{veg.price.quarterly}}</text>
+          <text class="plan-duration">{{veg.duration.quarterly}} 天</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-label">为你的菜署个名</text>
+      <input
+        class="name-input"
+        placeholder="例如：达尔文的菜"
+        value="{{ownerName}}"
+        bindinput="onNameInput"
+        maxlength="20"
+      />
+    </view>
+  </view>
+
+  <view class="bottom-bar">
+    <view class="price-display">
+      <text class="price-label">合计</text>
+      <text class="price-value">¥{{planType === 'trial' ? veg.price.trial : veg.price.quarterly}}</text>
+    </view>
+    <button
+      class="adopt-btn"
+      disabled="{{veg.stock <= 0 || submitting}}"
+      bindtap="onAdopt"
+    >
+      {{veg.stock <= 0 ? '已认满' : (submitting ? '下单中...' : '立即认养')}}
+    </button>
+  </view>
+</view>

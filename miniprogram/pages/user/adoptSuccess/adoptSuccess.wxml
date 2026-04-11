@@ -1,0 +1,9 @@
+<view class="success-page" wx:if="{{adoption}}">
+  <view class="success-icon">🎉</view>
+  <text class="success-title">认养成功！</text>
+  <text class="success-desc">你的菜已经播种啦，每天来看看它的成长吧</text>
+  <view class="plate-wrapper">
+    <name-plate vegName="{{vegName}}" ownerName="{{adoption.ownerName}}" code="{{adoption.code}}" startDate="{{dateStr}}" />
+  </view>
+  <button class="go-garden-btn" bindtap="goToGarden">去我的菜园看看</button>
+</view>
