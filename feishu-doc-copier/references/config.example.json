@@ -1,0 +1,15 @@
+{
+  "folder_token": "YOUR_FOLDER_TOKEN",
+  "documents": [
+    {
+      "name": "第一章：快速上手",
+      "source": "SOURCE_DOC_TOKEN_1",
+      "target": "TARGET_DOC_TOKEN_1"
+    },
+    {
+      "name": "第二章：进阶技巧", 
+      "source": "SOURCE_DOC_TOKEN_2",
+      "target": "TARGET_DOC_TOKEN_2"
+    }
+  ]
+}
