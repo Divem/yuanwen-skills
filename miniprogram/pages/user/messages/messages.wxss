@@ -1,9 +1,0 @@
-.msg-page { padding: 20rpx 0; }
-.msg-item { display: flex; padding: 24rpx 32rpx; background: #fff; border-bottom: 1rpx solid #f0f0f0; }
-.msg-thumb { width: 100rpx; height: 100rpx; border-radius: 12rpx; flex-shrink: 0; }
-.msg-thumb-placeholder { width: 100rpx; height: 100rpx; border-radius: 12rpx; background: #E8F5E9; display: flex; align-items: center; justify-content: center; font-size: 40rpx; flex-shrink: 0; }
-.msg-content { margin-left: 20rpx; flex: 1; overflow: hidden; }
-.msg-title { font-size: 28rpx; font-weight: bold; display: block; }
-.msg-text { font-size: 26rpx; color: #666; display: block; margin-top: 8rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.msg-date { font-size: 22rpx; color: #999; display: block; margin-top: 8rpx; }
-.empty, .loading { text-align: center; padding: 200rpx 0; color: #999; }

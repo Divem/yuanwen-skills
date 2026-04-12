@@ -1,9 +1,0 @@
-.plate { background: linear-gradient(135deg, #E8F5E9, #C8E6C9); border-radius: 20rpx; padding: 40rpx; border: 2rpx solid #A5D6A7; }
-.plate-header { display: flex; align-items: center; margin-bottom: 24rpx; }
-.plate-icon { font-size: 40rpx; margin-right: 12rpx; }
-.plate-brand { font-size: 24rpx; color: #4CAF50; font-weight: bold; }
-.plate-body { text-align: center; }
-.plate-veg { font-size: 40rpx; font-weight: bold; display: block; color: #2E7D32; }
-.plate-owner { font-size: 32rpx; display: block; margin-top: 16rpx; color: #333; }
-.plate-code { font-size: 24rpx; display: block; margin-top: 12rpx; color: #666; }
-.plate-date { font-size: 22rpx; display: block; margin-top: 8rpx; color: #999; }

@@ -1,1 +1,0 @@
-<view class="phrases"><view class="phrase-tag" wx:for="{{phrases}}" wx:key="*this" data-text="{{item}}" bindtap="onTap">{{item}}</view></view>

@@ -1,5 +1,0 @@
-{
-  "triggers": [
-    { "name": "cancelExpired", "type": "timer", "config": "0 */10 * * * * *" }
-  ]
-}

@@ -1,8 +1,0 @@
-<view class="detail" wx:if="{{adoption}}">
-  <view class="detail-section"><text class="detail-label">订单状态</text><text class="detail-status">{{statusLabel}}</text></view>
-  <view class="detail-section"><text class="detail-label">菜品</text><text>{{vegName}}</text></view>
-  <view class="detail-section"><text class="detail-label">套餐</text><text>{{adoption.planType === 'trial' ? '一棵菜·尝鲜装' : '一棵菜·季度装'}}</text></view>
-  <view class="detail-section"><text class="detail-label">下单时间</text><text>{{dateStr}}</text></view>
-  <view class="plate-section"><name-plate vegName="{{vegName}}" ownerName="{{adoption.ownerName}}" code="{{adoption.code}}" startDate="{{dateStr}}" /></view>
-  <button class="timeline-btn" wx:if="{{adoption.status === 'growing'}}" bindtap="goToTimeline">查看成长记录</button>
-</view>
