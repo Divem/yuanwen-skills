@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Backups
+backups/
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
