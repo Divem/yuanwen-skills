@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lark-CLI Command Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;--bg-secondary:#12151c;--bg-tertiary:#181c26;
+  --bg-card:#151923;--bg-code:#1a1f2e;
+  --border:#252a37;--border-subtle:#1e2230;
+  --text:#e4e8f0;--text-secondary:#8b92a5;--text-muted:#5a6178;
+  --accent:#22d3a7;--accent-dim:rgba(34,211,167,.12);
+  --accent-hover:#2ee8ba;--accent-glow:rgba(34,211,167,.25);
+  --orange:#f59e0b;--orange-dim:rgba(245,158,11,.12);
+  --blue:#60a5fa;--blue-dim:rgba(96,165,250,.12);
+  --purple:#a78bfa;--purple-dim:rgba(167,139,250,.12);
+  --pink:#f472b6;--pink-dim:rgba(244,114,182,.12);
+  --red:#f87171;--red-dim:rgba(248,113,113,.12);
+  --font-display:'Outfit',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono','Fira Code',monospace;
+  --sidebar-w:280px;--header-h:56px;
+  --radius:8px;--radius-lg:12px;
+  --shadow:0 1px 3px rgba(0,0,0,.4),0 4px 20px rgba(0,0,0,.3);
+  --transition:200ms cubic-bezier(.4,0,.2,1);
+}
+[data-theme="light"]{
+  --bg:#f5f6f8;--bg-secondary:#ffffff;--bg-tertiary:#eef0f4;
+  --bg-card:#ffffff;--bg-code:#f0f2f5;
+  --border:#e0e3ea;--border-subtle:#e8eaf0;
+  --text:#1a1d27;--text-secondary:#5f6578;--text-muted:#9ca0b0;
+  --accent:#0d9e7a;--accent-dim:rgba(13,158,122,.08);
+  --accent-hover:#0bb88d;--accent-glow:rgba(13,158,122,.2);
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 20px rgba(0,0,0,.06);
+}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--header-h) + 24px)}
+body{
+  font-family:var(--font-display);background:var(--bg);color:var(--text);
+  line-height:1.7;transition:background var(--transition),color var(--transition);
+  -webkit-font-smoothing:antialiased;
+}
+
+::selection{background:var(--accent);color:var(--bg)}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}
+
+a{color:var(--accent);text-decoration:none;transition:color var(--transition)}
+a:hover{color:var(--accent-hover)}
+
+code{
+  font-family:var(--font-mono);font-size:.85em;
+  background:var(--bg-code);padding:2px 6px;border-radius:4px;
+  color:var(--accent);border:1px solid var(--border-subtle);
+}
+pre{margin:0}
+pre code{
+  display:block;padding:0;background:none;border:none;
+  color:inherit;font-size:.84em;line-height:1.8;
+}
+
+/* HEADER */
+.header{
+  position:fixed;top:0;left:0;right:0;height:var(--header-h);z-index:100;
+  background:color-mix(in srgb, var(--bg-secondary) 85%, transparent);
+  backdrop-filter:blur(16px) saturate(180%);
+  border-bottom:1px solid var(--border-subtle);
+  display:flex;align-items:center;padding:0 20px;gap:16px;
+  transition:background var(--transition);
+}
+.header-logo{
+  display:flex;align-items:center;gap:10px;
+  font-weight:700;font-size:1.05rem;color:var(--text);
+  white-space:nowrap;
+}
+.header-logo .logo-icon{
+  width:28px;height:28px;border-radius:6px;
+  background:linear-gradient(135deg,var(--accent),#0ea5e9);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:800;color:#fff;
+  font-family:var(--font-mono);
+}
+.header-version{
+  font-size:.7rem;color:var(--text-muted);background:var(--bg-tertiary);
+  padding:2px 8px;border-radius:10px;font-family:var(--font-mono);
+}
+
+.search-box{
+  flex:1;max-width:480px;position:relative;margin:0 auto;
+}
+.search-box input{
+  width:100%;height:36px;border-radius:18px;
+  background:var(--bg-tertiary);border:1px solid var(--border-subtle);
+  padding:0 16px 0 38px;font-size:.88rem;color:var(--text);
+  font-family:var(--font-display);outline:none;
+  transition:border-color var(--transition),box-shadow var(--transition);
+}
+.search-box input::placeholder{color:var(--text-muted)}
+.search-box input:focus{
+  border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);
+}
+.search-box .search-icon{
+  position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  color:var(--text-muted);font-size:.9rem;pointer-events:none;
+}
+.search-box .search-shortcut{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  font-size:.65rem;color:var(--text-muted);background:var(--bg-secondary);
+  border:1px solid var(--border);padding:2px 6px;border-radius:4px;
+  font-family:var(--font-mono);
+}
+.search-results{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);box-shadow:var(--shadow);
+  max-height:400px;overflow-y:auto;display:none;z-index:200;
+}
+.search-results.active{display:block}
+.search-result-item{
+  padding:10px 16px;cursor:pointer;
+  border-bottom:1px solid var(--border-subtle);
+  transition:background var(--transition);
+}
+.search-result-item:last-child{border-bottom:none}
+.search-result-item:hover,.search-result-item.active{background:var(--accent-dim)}
+.search-result-item .result-title{
+  font-size:.85rem;font-weight:500;color:var(--text);
+}
+.search-result-item .result-context{
+  font-size:.78rem;color:var(--text-secondary);margin-top:2px;
+  font-family:var(--font-mono);
+}
+.search-result-item mark{
+  background:var(--orange-dim);color:var(--orange);
+  padding:0 2px;border-radius:2px;
+}
+
+.header-actions{display:flex;align-items:center;gap:6px}
+.theme-toggle{
+  width:36px;height:36px;border-radius:8px;border:none;cursor:pointer;
+  background:var(--bg-tertiary);color:var(--text-secondary);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.05rem;transition:all var(--transition);
+}
+.theme-toggle:hover{background:var(--accent-dim);color:var(--accent)}
+.sidebar-toggle{
+  display:none;width:36px;height:36px;border-radius:8px;border:none;
+  cursor:pointer;background:var(--bg-tertiary);color:var(--text-secondary);
+  font-size:1.1rem;transition:all var(--transition);
+}
+.sidebar-toggle:hover{background:var(--accent-dim);color:var(--accent)}
+
+/* LAYOUT */
+.layout{
+  display:flex;margin-top:var(--header-h);min-height:calc(100vh - var(--header-h));
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);
+  height:calc(100vh - var(--header-h));position:sticky;top:var(--header-h);
+  overflow-y:auto;overflow-x:hidden;
+  border-right:1px solid var(--border-subtle);
+  background:var(--bg-secondary);
+  padding:16px 0;transition:background var(--transition);
+}
+.sidebar-section{margin-bottom:4px}
+.sidebar-section-title{
+  font-size:.68rem;font-weight:600;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--text-muted);
+  padding:8px 20px 4px;display:flex;align-items:center;gap:6px;
+}
+.sidebar-link{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 20px 6px 24px;font-size:.84rem;color:var(--text-secondary);
+  cursor:pointer;transition:all var(--transition);
+  border-left:2px solid transparent;text-decoration:none;
+  line-height:1.4;
+}
+.sidebar-link:hover{color:var(--text);background:var(--accent-dim)}
+.sidebar-link.active{
+  color:var(--accent);border-left-color:var(--accent);
+  background:var(--accent-dim);font-weight:500;
+}
+.sidebar-link .link-icon{
+  width:18px;text-align:center;font-size:.8rem;flex-shrink:0;
+  color:var(--text-muted);transition:color var(--transition);
+}
+.sidebar-link:hover .link-icon,.sidebar-link.active .link-icon{color:var(--accent)}
+.sidebar-link .cmd-hint{
+  margin-left:auto;font-family:var(--font-mono);font-size:.7rem;
+  color:var(--text-muted);opacity:.7;
+}
+
+/* MAIN CONTENT */
+.main{
+  flex:1;min-width:0;padding:32px 48px 80px;
+  max-width:1100px;
+}
+@media(max-width:1200px){.main{padding:24px 32px 80px;max-width:100%}}
+@media(max-width:768px){.main{padding:20px 16px 80px}}
+
+/* SECTIONS */
+.section{margin-bottom:48px;animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+.section-header{
+  display:flex;align-items:center;gap:10px;margin-bottom:16px;
+  padding-bottom:12px;border-bottom:1px solid var(--border-subtle);
+}
+.section-icon{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.95rem;flex-shrink:0;
+}
+.section-title{font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
+.section-desc{color:var(--text-secondary);font-size:.9rem;margin-bottom:20px;line-height:1.6}
+
+/* INTRO */
+.hero{
+  padding:40px 0 32px;border-bottom:1px solid var(--border-subtle);
+  margin-bottom:36px;
+}
+.hero h1{
+  font-size:2.2rem;font-weight:800;letter-spacing:-.03em;
+  background:linear-gradient(135deg,var(--text),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;line-height:1.2;margin-bottom:8px;
+}
+.hero p{color:var(--text-secondary);font-size:.95rem;max-width:600px}
+.hero-badges{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.hero-badge{
+  font-size:.72rem;font-family:var(--font-mono);
+  padding:4px 10px;border-radius:12px;
+  background:var(--bg-tertiary);border:1px solid var(--border-subtle);
+  color:var(--text-secondary);
+}
+.hero-badge a{color:var(--accent);font-weight:500}
+
+/* CODE BLOCKS */
+.code-group{margin:12px 0 16px;border-radius:var(--radius);overflow:hidden}
+.code-group-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 14px;background:var(--bg-tertiary);
+  border:1px solid var(--border);border-bottom:none;
+  border-radius:var(--radius) var(--radius) 0 0;
+}
+.code-group-title{
+  font-size:.75rem;font-family:var(--font-mono);color:var(--text-muted);
+  display:flex;align-items:center;gap:6px;
+}
+.code-group-title .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.copy-btn{
+  background:none;border:none;cursor:pointer;
+  font-size:.72rem;color:var(--text-muted);font-family:var(--font-mono);
+  padding:2px 8px;border-radius:4px;transition:all var(--transition);
+}
+.copy-btn:hover{background:var(--accent-dim);color:var(--accent)}
+.code-group pre{
+  background:var(--bg-code);border:1px solid var(--border);
+  border-radius:0 0 var(--radius) var(--radius);
+  padding:14px 18px;overflow-x:auto;
+}
+
+/* TABLES */
+.table-wrap{
+  overflow-x:auto;border:1px solid var(--border);
+  border-radius:var(--radius);margin:12px 0 16px;
+}
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+th{
+  text-align:left;padding:10px 14px;font-weight:600;
+  background:var(--bg-tertiary);color:var(--text-secondary);
+  font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;
+  border-bottom:1px solid var(--border);
+}
+td{
+  padding:9px 14px;border-bottom:1px solid var(--border-subtle);
+  color:var(--text);vertical-align:top;
+}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--accent-dim)}
+td code{font-size:.82em}
+
+/* SUBSECTION */
+.subsection{margin-bottom:24px}
+.subsection-title{
+  font-size:1.05rem;font-weight:600;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.subsection-title::before{
+  content:'';width:3px;height:18px;border-radius:2px;
+  background:var(--accent);flex-shrink:0;
+}
+
+/* TAGS */
+.tag{
+  display:inline-block;font-size:.68rem;font-family:var(--font-mono);
+  padding:2px 7px;border-radius:4px;font-weight:500;
+}
+.tag-bot{background:var(--blue-dim);color:var(--blue)}
+.tag-user{background:var(--orange-dim);color:var(--orange)}
+.tag-both{background:var(--purple-dim);color:var(--purple)}
+.tag-required{background:var(--red-dim);color:var(--red)}
+
+/* QUICK START */
+.quickstart{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;
+  margin:16px 0;
+}
+.quickstart-step{
+  padding:14px 16px;border-radius:var(--radius);
+  background:var(--bg-card);border:1px solid var(--border-subtle);
+  transition:border-color var(--transition),transform var(--transition);
+}
+.quickstart-step:hover{border-color:var(--accent);transform:translateY(-1px)}
+.quickstart-step .step-num{
+  font-family:var(--font-mono);font-size:.72rem;color:var(--accent);
+  font-weight:600;margin-bottom:4px;
+}
+.quickstart-step .step-title{font-size:.82rem;font-weight:600;margin-bottom:4px}
+.quickstart-step .step-code{
+  font-family:var(--font-mono);font-size:.78rem;color:var(--text-secondary);
+}
+
+/* TOC CARDS */
+.toc-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;
+  margin:16px 0;
+}
+.toc-card{
+  padding:12px 14px;border-radius:var(--radius);cursor:pointer;
+  border:1px solid var(--border-subtle);background:var(--bg-card);
+  transition:all var(--transition);text-decoration:none;display:block;
+}
+.toc-card:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow)}
+.toc-card .card-icon{font-size:1.1rem;margin-bottom:6px}
+.toc-card .card-title{font-size:.85rem;font-weight:600;color:var(--text)}
+.toc-card .card-desc{font-size:.75rem;color:var(--text-muted);margin-top:3px}
+
+/* BACK TO TOP */
+.back-top{
+  position:fixed;bottom:24px;right:24px;width:40px;height:40px;
+  border-radius:10px;background:var(--accent);color:var(--bg);
+  border:none;cursor:pointer;font-size:1.1rem;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px var(--accent-glow);
+  opacity:0;transform:translateY(10px);
+  transition:opacity .3s,transform .3s;z-index:90;
+}
+.back-top.visible{opacity:1;transform:none}
+.back-top:hover{transform:scale(1.08)}
+
+/* HIGHLIGHT on scroll */
+.section:target{
+  animation:highlight .8s ease;
+}
+@keyframes highlight{
+  0%{background:var(--accent-dim);border-radius:var(--radius-lg)}
+  100%{background:transparent}
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .sidebar{
+    position:fixed;left:-300px;top:var(--header-h);z-index:150;
+    box-shadow:var(--shadow);transition:left .3s ease,background var(--transition);
+  }
+  .sidebar.open{left:0}
+  .sidebar-toggle{display:flex}
+  .sidebar-overlay{
+    display:none;position:fixed;inset:0;top:var(--header-h);
+    background:rgba(0,0,0,.5);z-index:140;
+  }
+  .sidebar-overlay.open{display:block}
+  .header-version{display:none}
+  .hero h1{font-size:1.6rem}
+}
+@media(max-width:600px){
+  .quickstart{grid-template-columns:1fr}
+  .toc-grid{grid-template-columns:1fr 1fr}
+  .search-shortcut{display:none}
+}
+
+/* note callout */
+.callout{
+  padding:12px 16px;border-radius:var(--radius);
+  background:var(--accent-dim);border-left:3px solid var(--accent);
+  margin:12px 0;font-size:.85rem;color:var(--text-secondary);
+}
+.callout code{background:var(--bg-secondary);border-color:var(--border)}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+  <div class="header-logo">
+    <div class="logo-icon">L</div>
+    <span>Lark-CLI</span>
+    <span class="header-version">v1.0.0</span>
+  </div>
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="搜索命令、标志、示例..." autocomplete="off">
+    <span class="search-shortcut">/</span>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+  <div class="header-actions">
+    <button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
+  </div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">⚙️ 快速开始</div>
+      <a class="sidebar-link" href="#install" data-section="install"><span class="link-icon">▸</span>安装<span class="cmd-hint">npm</span></a>
+      <a class="sidebar-link" href="#quickstart" data-section="quickstart"><span class="link-icon">▸</span>快速上手</a>
+      <a class="sidebar-link" href="#global-flags" data-section="global-flags"><span class="link-icon">▸</span>通用标志</a>
+      <a class="sidebar-link" href="#identity" data-section="identity"><span class="link-icon">▸</span>身份类型</a>
+      <a class="sidebar-link" href="#output-format" data-section="output-format"><span class="link-icon">▸</span>输出格式</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">🔒 配置</div>
+      <a class="sidebar-link" href="#auth" data-section="auth"><span class="link-icon">▸</span>auth<span class="cmd-hint">认证管理</span></a>
+      <a class="sidebar-link" href="#config" data-section="config"><span class="link-icon">▸</span>config<span class="cmd-hint">配置管理</span></a>
+      <a class="sidebar-link" href="#doctor" data-section="doctor"><span class="link-icon">▸</span>doctor<span class="cmd-hint">健康检查</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">💬 核心服务</div>
+      <a class="sidebar-link" href="#im" data-section="im"><span class="link-icon">▸</span>im<span class="cmd-hint">即时通讯</span></a>
+      <a class="sidebar-link" href="#contact" data-section="contact"><span class="link-icon">▸</span>contact<span class="cmd-hint">通讯录</span></a>
+      <a class="sidebar-link" href="#calendar" data-section="calendar"><span class="link-icon">▸</span>calendar<span class="cmd-hint">日历</span></a>
+      <a class="sidebar-link" href="#docs" data-section="docs"><span class="link-icon">▸</span>docs<span class="cmd-hint">文档</span></a>
+      <a class="sidebar-link" href="#drive" data-section="drive"><span class="link-icon">▸</span>drive<span class="cmd-hint">云盘</span></a>
+      <a class="sidebar-link" href="#base" data-section="base"><span class="link-icon">▸</span>base<span class="cmd-hint">多维表格</span></a>
+      <a class="sidebar-link" href="#sheets" data-section="sheets"><span class="link-icon">▸</span>sheets<span class="cmd-hint">电子表格</span></a>
+      <a class="sidebar-link" href="#wiki" data-section="wiki"><span class="link-icon">▸</span>wiki<span class="cmd-hint">知识库</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">📋 生产力</div>
+      <a class="sidebar-link" href="#task" data-section="task"><span class="link-icon">▸</span>task<span class="cmd-hint">任务</span></a>
+      <a class="sidebar-link" href="#mail" data-section="mail"><span class="link-icon">▸</span>mail<span class="cmd-hint">邮件</span></a>
+      <a class="sidebar-link" href="#vc" data-section="vc"><span class="link-icon">▸</span>vc<span class="cmd-hint">视频会议</span></a>
+      <a class="sidebar-link" href="#minutes" data-section="minutes"><span class="link-icon">▸</span>minutes<span class="cmd-hint">会议纪要</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">⚙️ 高级</div>
+      <a class="sidebar-link" href="#event" data-section="event"><span class="link-icon">▸</span>event<span class="cmd-hint">事件订阅</span></a>
+      <a class="sidebar-link" href="#api" data-section="api"><span class="link-icon">▸</span>api<span class="cmd-hint">API 请求</span></a>
+      <a class="sidebar-link" href="#schema" data-section="schema"><span class="link-icon">▸</span>schema<span class="cmd-hint">Schema 查询</span></a>
+      <a class="sidebar-link" href="#ai-skills" data-section="ai-skills"><span class="link-icon">▸</span>AI 技能集成</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <!-- HERO -->
+    <div class="hero">
+      <h1>Lark-CLI Command Reference</h1>
+      <p>飞书/Lark 官方命令行工具完全参考手册 — 在终端中直接与飞书所有核心服务交互。</p>
+      <div class="hero-badges">
+        <span class="hero-badge">v1.0.0</span>
+        <span class="hero-badge"><a href="https://github.com/larksuite/cli" target="_blank">GitHub</a></span>
+        <span class="hero-badge"><a href="https://open.feishu.cn/document/" target="_blank">API Docs</a></span>
+      </div>
+    </div>
+
+    <!-- INSTALL -->
+    <section class="section" id="install">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--accent-dim);color:var(--accent)">⬇️</div>
+        <h2 class="section-title">安装</h2>
+      </div>
+      <div class="code-group">
+        <div class="code-group-header">
+          <span class="code-group-title"><span class="dot"></span>Terminal</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre><code>npm install -g @larksuite/lark-cli</code></pre>
+      </div>
+    </section>
+
+    <!-- QUICK START -->
+    <section class="section" id="quickstart">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--orange-dim);color:var(--orange)">⚡</div>
+        <h2 class="section-title">快速上手</h2>
+      </div>
+      <div class="quickstart">
+        <div class="quickstart-step">
+          <div class="step-num">01</div>
+          <div class="step-title">初始化配置</div>
+          <div class="step-code">lark-cli config init</div>
+        </div>
+        <div class="quickstart-step">
+          <div class="step-num">02</div>
+          <div class="step-title">登录授权</div>
+          <div class="step-code">lark-cli auth login</div>
+        </div>
+        <div class="quickstart-step">
+          <div class="step-num">03</div>
+          <div class="step-title">健康检查</div>
+          <div class="step-code">lark-cli doctor</div>
+        </div>
+        <div class="quickstart-step">
+          <div class="step-num">04</div>
+          <div class="step-title">开始使用</div>
+          <div class="step-code">lark-cli calendar +agenda</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GLOBAL FLAGS -->
+    <section class="section" id="global-flags">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--blue-dim);color:var(--blue)">🏳️</div>
+        <h2 class="section-title">通用标志</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>标志</th><th>说明</th><th>默认值</th></tr></thead>
+          <tbody>
+            <tr><td><code>--as &lt;type&gt;</code></td><td>身份类型：<code>user</code> / <code>bot</code> / <code>auto</code></td><td><code>auto</code></td></tr>
+            <tr><td><code>--format &lt;fmt&gt;</code></td><td>输出格式：<code>json</code> / <code>ndjson</code> / <code>table</code> / <code>csv</code> / <code>pretty</code></td><td><code>json</code></td></tr>
+            <tr><td><code>--dry-run</code></td><td>只打印请求，不执行</td><td>-</td></tr>
+            <tr><td><code>--page-all</code></td><td>自动分页获取所有结果</td><td>-</td></tr>
+            <tr><td><code>--page-size &lt;N&gt;</code></td><td>每页大小（0 = 使用 API 默认值）</td><td>-</td></tr>
+            <tr><td><code>--page-limit &lt;N&gt;</code></td><td><code>--page-all</code> 最大页数（默认 10，0 = 无限）</td><td>-</td></tr>
+            <tr><td><code>--page-delay &lt;MS&gt;</code></td><td>分页间隔毫秒数（默认 200）</td><td>-</td></tr>
+            <tr><td><code>-o, --output &lt;path&gt;</code></td><td>输出到文件</td><td>-</td></tr>
+            <tr><td><code>--params &lt;json&gt;</code></td><td>URL/查询参数 JSON</td><td>-</td></tr>
+            <tr><td><code>--data &lt;json&gt;</code></td><td>请求体 JSON (POST/PATCH/PUT/DELETE)</td><td>-</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- IDENTITY -->
+    <section class="section" id="identity">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--purple-dim);color:var(--purple)">👤</div>
+        <h2 class="section-title">身份类型 (--as)</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>类型</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>user</code></td><td>以用户身份调用（使用用户 token）</td></tr>
+            <tr><td><code>bot</code></td><td>以应用身份调用（使用 app ticket）</td></tr>
+            <tr><td><code>auto</code></td><td>自动选择（默认）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">部分命令仅支持特定身份，如 <code>+messages-send</code> 仅支持 <span class="tag tag-bot">bot</span>，<code>+messages-search</code> 仅支持 <span class="tag tag-user">user</span>。</div>
+    </section>
+
+    <!-- OUTPUT FORMAT -->
+    <section class="section" id="output-format">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--pink-dim);color:var(--pink)">📄</div>
+        <h2 class="section-title">输出格式 (--format)</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>格式</th><th>说明</th></tr></thead>
+          <tbody>
+            <tr><td><code>json</code></td><td>原始 JSON（默认）</td></tr>
+            <tr><td><code>pretty</code></td><td>格式化 JSON（带缩进和颜色）</td></tr>
+            <tr><td><code>table</code></td><td>表格形式展示</td></tr>
+            <tr><td><code>csv</code></td><td>CSV 格式</td></tr>
+            <tr><td><code>ndjson</code></td><td>每行一个 JSON 对象</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- AUTH -->
+    <section class="section" id="auth">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--accent-dim);color:var(--accent)">🔒</div>
+        <h2 class="section-title">auth <span class="tag tag-both">user/bot</span></h2>
+      </div>
+      <div class="section-desc">OAuth 凭据和授权管理。</div>
+      <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 查看认证状态
+lark-cli auth status
+
+# 设备流授权登录（浏览器中完成）
+lark-cli auth login
+
+# 指定权限域登录
+lark-cli auth login --domain calendar,task
+
+# 只请求推荐权限（自动审批）
+lark-cli auth login --recommend
+
+# 请求特定 scope
+lark-cli auth login --scope "calendar:calendar:read calendar:calendar:write"
+
+# 非阻塞模式（用于 AI Agent）
+lark-cli auth login --no-wait
+# 返回后用 device code 完成授权
+lark-cli auth login --device-code &lt;code&gt;
+
+# 列出所有已登录用户
+lark-cli auth list
+
+# 检查当前 token 是否有指定 scope
+lark-cli auth check --scope "calendar:calendar:read"
+
+# 查询应用已启用的 scope
+lark-cli auth scopes
+
+# 刷新 token
+lark-cli auth refresh
+
+# 登出（清除 token）
+lark-cli auth logout</code></pre></div>
+      <div class="callout">可用 <code>--domain</code>： <code>base</code> <code>calendar</code> <code>contact</code> <code>docs</code> <code>drive</code> <code>event</code> <code>im</code> <code>mail</code> <code>minutes</code> <code>sheets</code> <code>task</code> <code>vc</code> <code>wiki</code> <code>all</code></div>
+    </section>
+
+    <!-- CONFIG -->
+    <section class="section" id="config">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--blue-dim);color:var(--blue)">⚙️</div>
+        <h2 class="section-title">config</h2>
+      </div>
+      <div class="section-desc">全局 CLI 配置管理。</div>
+      <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 初始化配置（交互式）
+lark-cli config init
+
+# 非交互式初始化
+lark-cli config init --app-id "cli_xxx" --app-secret-stdin --brand feishu
+echo "my-secret" | lark-cli config init --app-id "cli_xxx" --app-secret-stdin
+
+# 创建新应用并初始化
+lark-cli config init --new
+
+# 查看当前配置
+lark-cli config show
+
+# 查看或设置默认身份类型
+lark-cli config default-as
+lark-cli config default-as bot
+
+# 移除配置（清除所有 token 和配置）
+lark-cli config remove</code></pre></div>
+    </section>
+
+    <!-- DOCTOR -->
+    <section class="section" id="doctor">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--accent-dim);color:var(--accent)">⚕️</div>
+        <h2 class="section-title">doctor</h2>
+      </div>
+      <div class="section-desc">CLI 健康检查：配置、认证和网络连通性。</div>
+      <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 全面检查（配置、认证、网络连通性）
+lark-cli doctor
+
+# 仅检查本地状态（跳过网络检查）
+lark-cli doctor --offline</code></pre></div>
+    </section>
+
+    <!-- IM -->
+    <section class="section" id="im">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--pink-dim);color:var(--pink)">💬</div>
+        <h2 class="section-title">im <span class="tag tag-both">user/bot</span></h2>
+      </div>
+      <div class="section-desc">消息和群聊管理。</div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">发送消息 <span class="tag tag-bot">bot</span></h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 发送文本消息到群聊
+lark-cli im +messages-send --chat-id oc_xxx --text "Hello World"
+
+# 发送 Markdown 消息
+lark-cli im +messages-send --chat-id oc_xxx --markdown "**粗体** 和 `代码`"
+
+# 发送图片
+lark-cli im +messages-send --chat-id oc_xxx --image /path/to/image.png
+
+# 发送文件
+lark-cli im +messages-send --chat-id oc_xxx --file /path/to/document.pdf
+
+# 发送视频（需要封面图）
+lark-cli im +messages-send --chat-id oc_xxx --video /path/to/video.mp4 --video-cover /path/to/cover.jpg
+
+# 发送音频
+lark-cli im +messages-send --chat-id oc_xxx --audio /path/to/audio.mp3
+
+# 发送自定义 content JSON
+lark-cli im +messages-send --chat-id oc_xxx --content '{"text":"hello"}' --msg-type text
+
+# 发送私聊消息
+lark-cli im +messages-send --user-id ou_xxx --text "私聊消息"
+
+# 幂等发送（防止重复）
+lark-cli im +messages-send --chat-id oc_xxx --text "hello" --idempotency-key "unique-key-123"</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">回复消息 <span class="tag tag-bot">bot</span></h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 回复消息
+lark-cli im +messages-reply --message-id om_xxx --text "回复内容"
+
+# 回复 Markdown
+lark-cli im +messages-reply --message-id om_xxx --markdown "## 标题\n内容"
+
+# 在话题中回复
+lark-cli im +messages-reply --message-id om_xxx --text "话题回复" --reply-in-thread</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">聊天管理 <span class="tag tag-bot">bot</span></h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 创建群聊
+lark-cli im +chat-create --name "项目群" --users ou_xxx,ou_yyy --type private
+
+# 创建公开群聊
+lark-cli im +chat-create --name "公共群" --type public --set-bot-manager
+
+# 搜索群聊（按群名查找 chat_id）
+lark-cli im +chat-search --query "项目群" --format table
+
+# 按成员筛选群聊
+lark-cli im +chat-search --member-ids ou_xxx,ou_yyy
+
+# 更新群名称或描述
+lark-cli im +chat-update --chat-id oc_xxx --name "新群名" --description "新描述"</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">消息查看 <span class="tag tag-both">user/bot</span></h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 列出群聊消息（默认按时间倒序）
+lark-cli im +chat-messages-list --chat-id oc_xxx
+
+# 按时间范围筛选
+lark-cli im +chat-messages-list --chat-id oc_xxx \
+  --start "2026-03-01T00:00:00+08:00" --end "2026-03-31T23:59:59+08:00"
+
+# 查看 P2P 聊天消息
+lark-cli im +chat-messages-list --user-id ou_xxx
+
+# 美化输出
+lark-cli im +chat-messages-list --chat-id oc_xxx --format table</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">消息搜索 <span class="tag tag-user">user</span></h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 搜索消息
+lark-cli im +messages-search --query "关键词"
+
+# 按发送者筛选
+lark-cli im +messages-search --query "报告" --sender ou_xxx
+
+# 仅搜索 @我的消息
+lark-cli im +messages-search --query "审批" --is-at-me
+
+# 按附件类型筛选
+lark-cli im +messages-search --query "设计稿" --include-attachment-type image
+
+# 按时间范围搜索
+lark-cli im +messages-search --query "项目" \
+  --start "2026-03-01T00:00:00+08:00" --end "2026-03-31T23:59:59+08:00"</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">消息资源</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 批量获取消息
+lark-cli im +messages-mget --message-ids om_xxx,om_yyy
+
+# 下载消息中的图片/文件
+lark-cli im +messages-resources-download --message-id om_xxx --file-key boxcn_xxx
+
+# 查看话题消息
+lark-cli im +threads-messages-list omt_xxx
+
+# 置顶消息管理
+lark-cli im pins list --chat-id oc_xxx
+lark-cli im pins add --chat-id oc_xxx --message-id om_xxx
+lark-cli im pins remove --chat-id oc_xxx --message-id om_xxx
+
+# 表情回应
+lark-cli im reactions add --message-id om_xxx --emoji-type "[大笑]"</code></pre></div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="contact">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--orange-dim);color:var(--orange)">👥</div>
+        <h2 class="section-title">contact</h2>
+      </div>
+      <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 获取当前用户信息
+lark-cli contact +get-user
+
+# 获取指定用户信息
+lark-cli contact +get-user --user-id ou_xxx
+
+# 使用 union_id 查询
+lark-cli contact +get-user --user-id on_xxx --user-id-type union_id
+
+# 搜索用户（按相关性排序）
+lark-cli contact +search-user --query "张三" --format table</code></pre></div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section class="section" id="calendar">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--accent-dim);color:var(--accent)">📅</div>
+        <h2 class="section-title">calendar</h2>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">日程概览</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 查看今日日程
+lark-cli calendar +agenda
+
+# 查看指定日期范围
+lark-cli calendar +agenda --start "2026-04-01T00:00:00+08:00" --end "2026-04-30T23:59:59+08:00"
+
+# 美化输出
+lark-cli calendar +agenda --format table</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">创建日程</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 创建日程
+lark-cli calendar +create \
+  --summary "项目评审会议" \
+  --start "2026-04-15T14:00:00+08:00" \
+  --end "2026-04-15T15:00:00+08:00" \
+  --description "讨论 Q2 计划"
+
+# 创建日程并邀请参与者
+lark-cli calendar +create \
+  --summary "周会" \
+  --start "2026-04-14T10:00:00+08:00" \
+  --end "2026-04-14T11:00:00+08:00" \
+  --attendee-ids "ou_xxx,ou_yyy,oc_xxx"
+
+# 创建重复日程
+lark-cli calendar +create \
+  --summary "每日站会" \
+  --start "2026-04-14T09:30:00+08:00" \
+  --end "2026-04-14T09:45:00+08:00" \
+  --rrule "FREQ=DAILY;COUNT=10"</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">空闲/忙碌 &amp; 推荐时间</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 查看空闲/忙碌
+lark-cli calendar +freebusy
+
+# 智能推荐可用会议时间
+lark-cli calendar +suggestion --attendee-ids "ou_xxx,ou_yyy" --duration-minutes 60
+
+# 指定搜索范围
+lark-cli calendar +suggestion \
+  --attendee-ids "ou_xxx" \
+  --start "2026-04-14T09:00:00+08:00" \
+  --end "2026-04-14T18:00:00+08:00" \
+  --duration-minutes 30</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">底层操作</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code>lark-cli calendar calendars list
+lark-cli calendar calendars get --calendar-id cal_xxx
+lark-cli calendar events list
+lark-cli calendar events get --event-id evt_xxx
+lark-cli calendar events delete --event-id evt_xxx
+lark-cli calendar events patch --event-id evt_xxx
+lark-cli calendar event.attendees list
+lark-cli calendar freebusys query</code></pre></div>
+      </div>
+    </section>
+
+    <!-- DOCS -->
+    <section class="section" id="docs">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--blue-dim);color:var(--blue)">📜</div>
+        <h2 class="section-title">docs</h2>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">创建文档</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 创建空白文档
+lark-cli docs +create --title "新文档"
+
+# 使用 Markdown 创建
+lark-cli docs +create --title "项目计划" --markdown "# 项目计划\n\n## 目标\n\n- 目标一\n- 目标二"
+
+# 在知识库中创建
+lark-cli docs +create --title "知识库文档" --wiki-space "wiki_xxx" --wiki-node "node_xxx"
+
+# 在个人知识库中创建
+lark-cli docs +create --title "个人文档" --wiki-space my_library</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">获取 &amp; 更新</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 通过 URL 获取
+lark-cli docs +fetch --doc "https://xxx.feishu.cn/docx/xxx"
+
+# 追加内容
+lark-cli docs +update --doc "docx_xxx" --markdown "\n\n## 新增章节\n内容" --mode append
+
+# 覆盖内容
+lark-cli docs +update --doc "docx_xxx" --markdown "# 全新内容" --mode overwrite
+
+# 替换指定范围内容
+lark-cli docs +update --doc "docx_xxx" --mode replace_range \
+  --selection-by-title "## 旧章节" --markdown "## 新章节"
+
+# 仅更新标题
+lark-cli docs +update --doc "docx_xxx" --new-title "新标题"</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">搜索 &amp; 媒体</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 搜索文档
+lark-cli docs +search --query "项目计划" --format table
+
+# 插入图片到文档末尾
+lark-cli docs +media-insert --doc "docx_xxx" --file /path/to/image.png --type image
+
+# 下载文档中的图片
+lark-cli docs +media-download --token "img_xxx" --output ./image.png
+
+# 创建空白白板
+lark-cli docs +update --doc "docx_xxx" \
+  --markdown '&lt;whiteboard type="blank"&gt;&lt;/whiteboard&gt;' --mode append</code></pre></div>
+      </div>
+    </section>
+
+    <!-- DRIVE -->
+    <section class="section" id="drive">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--purple-dim);color:var(--purple)">📁</div>
+        <h2 class="section-title">drive</h2>
+      </div>
+      <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 上传文件到云盘根目录
+lark-cli drive +upload --file /path/to/report.pdf
+
+# 上传到指定文件夹并自定义文件名
+lark-cli drive +upload --file /path/to/data.csv --folder-token "fld_xxx" --name "数据.csv"
+
+# 从云盘下载文件
+lark-cli drive +download --file-token "file_xxx" --output ./downloaded.pdf
+
+# 添加全文评论
+lark-cli drive +add-comment --doc "https://xxx.feishu.cn/docx/xxx" --content "整体不错"
+
+# 在指定位置添加评论
+lark-cli drive +add-comment --doc "docx_xxx" --content "这里需要修改" \
+  --selection-with-ellipsis "目标段落...目标段落"
+
+# 底层操作
+lark-cli drive files list
+lark-cli drive files get --file-token "file_xxx"
+lark-cli drive permission.members list --file-token "file_xxx"</code></pre></div>
+    </section>
+
+    <!-- BASE -->
+    <section class="section" id="base">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--orange-dim);color:var(--orange)">📊</div>
+        <h2 class="section-title">base</h2>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">表 &amp; 记录操作</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 列出所有表
+lark-cli base +table-list --base-token "bascn_xxx"
+
+# 创建表
+lark-cli base +table-create --base-token "bascn_xxx" --table-name "客户表"
+
+# 列出记录
+lark-cli base +record-list --base-token "bascn_xxx" --table-id "tbl_xxx"
+
+# 创建记录
+lark-cli base +record-upsert --base-token "bascn_xxx" --table-id "tbl_xxx" \
+  --json '{"fields":{"姓名":"张三","部门":"研发","入职日期":"2026-01-15"}}'
+
+# 更新记录
+lark-cli base +record-upsert --base-token "bascn_xxx" --table-id "tbl_xxx" \
+  --record-id "rec_xxx" --json '{"fields":{"部门":"产品"}}'
+
+# 删除记录
+lark-cli base +record-delete --base-token "bascn_xxx" --table-id "tbl_xxx" --record-id "rec_xxx"</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">字段 &amp; 视图</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 列出字段
+lark-cli base +field-list --base-token "bascn_xxx" --table-id "tbl_xxx"
+
+# 创建字段
+lark-cli base +field-create --base-token "bascn_xxx" --table-id "tbl_xxx" \
+  --field-name "预算" --type "currency"
+
+# 列出视图
+lark-cli base +view-list --base-token "bascn_xxx" --table-id "tbl_xxx"
+
+# 创建视图
+lark-cli base +view-create --base-token "bascn_xxx" --table-id "tbl_xxx" --view-name "看板视图"
+
+# 设置过滤条件
+lark-cli base +view-set-filter --base-token "bascn_xxx" --table-id "tbl_xxx" \
+  --view-id "viw_xxx" --filter-conditions '{"conjunction":"and","conditions":[{"field_name":"部门","operator":"is","value":["研发"]}]}'</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">仪表盘 &amp; 工作流 &amp; 表单</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 仪表盘
+lark-cli base +dashboard-list --base-token "bascn_xxx"
+lark-cli base +dashboard-create --base-token "bascn_xxx" --name "数据看板"
+
+# 表单
+lark-cli base +form-list --base-token "bascn_xxx" --table-id "tbl_xxx"
+lark-cli base +form-create --base-token "bascn_xxx" --table-id "tbl_xxx"
+
+# 工作流
+lark-cli base +workflow-list --base-token "bascn_xxx"
+lark-cli base +workflow-enable --base-token "bascn_xxx" --workflow-id "wf_xxx"</code></pre></div>
+      </div>
+    </section>
+
+    <!-- SHEETS -->
+    <section class="section" id="sheets">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--green-dim);color:var(--accent)">📋</div>
+        <h2 class="section-title">sheets</h2>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">创建 &amp; 读写</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 创建带表头和数据的电子表格
+lark-cli sheets +create --title "员工表" \
+  --headers '["姓名","部门","入职日期"]' \
+  --data '[["张三","研发","2026-01-15"],["李四","产品","2026-02-20"]]'
+
+# 通过 URL 读取
+lark-cli sheets +read --url "https://xxx.feishu.cn/sheets/xxx"
+
+# 读取指定范围
+lark-cli sheets +read --spreadsheet-token "shtcn_xxx" --range "A1:D10"
+
+# 写入数据
+lark-cli sheets +write --spreadsheet-token "shtcn_xxx" --range "A1:C3" \
+  --values '[["姓名","部门","薪资"],["张三","研发","20000"]]'
+
+# 追加数据
+lark-cli sheets +append --spreadsheet-token "shtcn_xxx" --range "A:C" \
+  --values '[["王五","设计","19000"]]'</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">搜索 &amp; 导出</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 查找单元格
+lark-cli sheets +find --spreadsheet-token "shtcn_xxx" --find "张三"
+
+# 正则搜索
+lark-cli sheets +find --spreadsheet-token "shtcn_xxx" --find "\d{4}-\d{2}" --search-by-regex
+
+# 导出为 Excel
+lark-cli sheets +export --spreadsheet-token "shtcn_xxx" --file-extension xlsx --output-path ./export.xlsx
+
+# 导出为 CSV
+lark-cli sheets +export --spreadsheet-token "shtcn_xxx" --sheet-id "sheet1" --file-extension csv --output-path ./export.csv</code></pre></div>
+      </div>
+    </section>
+
+    <!-- WIKI -->
+    <section class="section" id="wiki">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--blue-dim);color:var(--blue)">📚</div>
+        <h2 class="section-title">wiki</h2>
+      </div>
+      <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 获取知识空间节点信息
+lark-cli wiki spaces get_node --node-token "node_xxx"
+
+# 底层操作
+lark-cli wiki spaces list --space-id "wiki_xxx"</code></pre></div>
+    </section>
+
+    <!-- TASK -->
+    <section class="section" id="task">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--pink-dim);color:var(--pink)">✅</div>
+        <h2 class="section-title">task</h2>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">创建 &amp; 查看</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 创建简单任务
+lark-cli task +create --summary "完成项目文档"
+
+# 创建带详情的任务
+lark-cli task +create \
+  --summary "代码审查" \
+  --description "审查 PR #123 的代码变更" \
+  --due "2026-04-20" \
+  --assignee "ou_xxx"
+
+# 使用相对日期
+lark-cli task +create --summary "提交周报" --due "+2d"
+
+# 查看我的任务
+lark-cli task +get-my-tasks
+
+# 按截止日期筛选
+lark-cli task +get-my-tasks --due-start "2026-04-01" --due-end "2026-04-30"
+
+# 搜索任务
+lark-cli task +get-my-tasks --query "文档" --format table</code></pre></div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">管理 &amp; 任务清单</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 完成任务
+lark-cli task +complete --task-id "task_xxx"
+
+# 重新打开任务
+lark-cli task +reopen --task-id "task_xxx"
+
+# 更新任务
+lark-cli task +update --task-id "task_xxx" --summary "新标题" --due "2026-05-01"
+
+# 分配任务
+lark-cli task +assign --task-id "task_xxx" --add "ou_xxx,ou_yyy"
+
+# 添加评论
+lark-cli task +comment --task-id "task_xxx" --content "进度如何？"
+
+# 创建任务清单
+lark-cli task +tasklist-create --name "Q2 OKR" --description "第二季度目标"
+
+# 底层操作
+lark-cli task tasklists list
+lark-cli task tasks get --task-id "task_xxx"
+lark-cli task subtasks list --task-id "task_xxx"</code></pre></div>
+      </div>
+    </section>
+
+    <!-- MAIL -->
+    <section class="section" id="mail">
+      <div class="section-header">
+        <div class="section-icon" style="background:var(--blue-dim);color:var(--blue)">✉️</div>
+        <h2 class="section-title">mail</h2>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">撰写 &amp; 发送</h3>
+        <div class="code-group"><div class="code-group-header"><span class="code-group-title"><span class="dot"></span>bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code># 发送邮件
+lark-cli mail +send \
+  --to "user@example.com" \
+  --subject "主题" \
+  --body "邮件正文"
+
+# 发送带附件的邮件
+lark-cli mail +send \
+  --to "user@example.com" \
+  --subject "报告" \
+  --body "请查收附件" \
+  --attachment "/path/to/report.pdf"</code></pre></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+// Copy code functionality
+function copyCode(btn) {
+  const code = btn.closest('.code-group').querySelector('pre code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+// Theme toggle
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+  const html = document.documentElement;
+  const currentTheme = html.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  themeToggle.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+});
+
+// Mobile sidebar toggle
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+sidebarToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  sidebarOverlay.classList.toggle('open');
+});
+
+sidebarOverlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  sidebarOverlay.classList.remove('open');
+});
+
+// Active sidebar link on scroll
+const sections = document.querySelectorAll('.section[id]');
+const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) {
+      current = section.getAttribute('id');
+    }
+  });
+
+  sidebarLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+});
+
+// Search functionality
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+
+searchInput.addEventListener('input', (e) => {
+  const query = e.target.value.toLowerCase();
+  if (query.length < 2) {
+    searchResults.classList.remove('active');
+    return;
+  }
+
+  // Simple search implementation
+  const results = [];
+  sections.forEach(section => {
+    const text = section.textContent.toLowerCase();
+    if (text.includes(query)) {
+      const title = section.querySelector('.section-title')?.textContent || '';
+      results.push({
+        title: title,
+        id: section.id
+      });
+    }
+  });
+
+  if (results.length > 0) {
+    searchResults.innerHTML = results.map(r => `
+      <div class="search-result-item" onclick="location.href='#${r.id}'">
+        <div class="result-title">${r.title}</div>
+      </div>
+    `).join('');
+    searchResults.classList.add('active');
+  } else {
+    searchResults.innerHTML = '<div class="search-result-item"><div class="result-title">No results found</div></div>';
+    searchResults.classList.add('active');
+  }
+});
+
+// Close search on click outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.search-box')) {
+    searchResults.classList.remove('active');
+  }
+});
+
+// Keyboard shortcut for search
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if (e.key === 'Escape') {
+    searchResults.classList.remove('active');
+    searchInput.blur();
+  }
+});
+</script>
+
+</body>
+</html>

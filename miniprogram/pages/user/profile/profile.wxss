@@ -1,0 +1,9 @@
+.profile { padding-top: 40rpx; }
+.user-header { display: flex; align-items: center; padding: 32rpx; background: #fff; margin-bottom: 20rpx; }
+.avatar { width: 120rpx; height: 120rpx; border-radius: 50%; background: #eee; }
+.user-info { margin-left: 24rpx; flex: 1; }
+.nickname { font-size: 34rpx; font-weight: bold; }
+.menu-list { background: #fff; }
+.menu-item { display: flex; justify-content: space-between; align-items: center; padding: 32rpx; border-bottom: 1rpx solid #f0f0f0; font-size: 30rpx; }
+.menu-arrow { color: #ccc; font-size: 28rpx; }
+.contact-btn { background: transparent !important; text-align: left !important; border-radius: 0 !important; margin: 0 !important; line-height: normal !important; font-size: 30rpx !important; }

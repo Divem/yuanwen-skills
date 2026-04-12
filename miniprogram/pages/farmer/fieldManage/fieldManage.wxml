@@ -1,0 +1,40 @@
+<view class="field-manage">
+  <view class="tab-bar">
+    <view class="tab {{tab === 'vegetables' ? 'active' : ''}}" data-tab="vegetables" bindtap="switchTab">菜品管理</view>
+    <view class="tab {{tab === 'adoptions' ? 'active' : ''}}" data-tab="adoptions" bindtap="switchTab">认养列表</view>
+  </view>
+  <view wx:if="{{tab === 'vegetables'}}">
+    <button class="add-btn" bindtap="goToAddVeg">+ 新增菜品</button>
+    <view class="list">
+      <view class="list-item" wx:for="{{vegetables}}" wx:key="_id" data-id="{{item._id}}" bindtap="goToEditVeg">
+        <image class="list-thumb" src="{{item.coverImage}}" mode="aspectFill" />
+        <view class="list-info">
+          <text class="list-name">{{item.name}}</text>
+          <text class="list-meta">库存: {{item.stock}} · ¥{{item.price.trial}}起</text>
+          <text class="list-status {{item.status === 'on_sale' ? 'on' : 'off'}}">{{item.status === 'on_sale' ? '上架中' : (item.status === 'off_shelf' ? '已下架' : '已认满')}}</text>
+        </view>
+        <text class="list-arrow">></text>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{tab === 'adoptions'}}">
+    <view class="filter-bar">
+      <view class="filter {{adoptionFilter === 'all' ? 'active' : ''}}" data-filter="all" bindtap="filterAdoptions">全部</view>
+      <view class="filter {{adoptionFilter === 'growing' ? 'active' : ''}}" data-filter="growing" bindtap="filterAdoptions">生长中</view>
+      <view class="filter {{adoptionFilter === 'harvested' ? 'active' : ''}}" data-filter="harvested" bindtap="filterAdoptions">已收获</view>
+    </view>
+    <view class="list">
+      <block wx:for="{{adoptions}}" wx:key="_id">
+        <view class="list-item" wx:if="{{adoptionFilter === 'all' || item.status === adoptionFilter}}">
+          <view class="list-info" style="flex:1">
+            <text class="list-name">{{item.vegName}} · {{item.ownerName}}</text>
+            <text class="list-meta">{{item.code}} · {{item.planType === 'trial' ? '尝鲜装' : '季度装'}}</text>
+            <text class="list-status {{item.status === 'growing' ? 'on' : 'off'}}">{{item.status === 'growing' ? '生长中' : '已收获'}}</text>
+          </view>
+          <button wx:if="{{item.status === 'growing'}}" class="harvest-btn" data-id="{{item._id}}" catchtap="markHarvested">标记收获</button>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>
+<farmer-tabbar active="{{1}}" />

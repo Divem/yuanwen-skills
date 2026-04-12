@@ -1,0 +1,13 @@
+.garden { padding: 32rpx 0; }
+.garden-header { display: flex; justify-content: space-between; align-items: center; padding: 0 32rpx; margin-bottom: 20rpx; }
+.garden-title { font-size: 36rpx; font-weight: bold; }
+.garden-count { font-size: 24rpx; color: #999; }
+.card-scroll { white-space: nowrap; padding: 0 32rpx; }
+.action-buttons { padding: 40rpx 32rpx; }
+.action-btn { border-radius: 40rpx !important; font-size: 30rpx !important; }
+.action-btn.primary { background: #4CAF50 !important; color: #fff !important; }
+.empty { text-align: center; padding: 200rpx 0; }
+.empty-icon { font-size: 80rpx; display: block; }
+.empty-text { font-size: 28rpx; color: #999; display: block; margin-top: 20rpx; }
+.empty-link { font-size: 28rpx; color: #4CAF50; display: block; margin-top: 20rpx; }
+.loading { text-align: center; padding: 100rpx 0; color: #999; }

@@ -1,0 +1,23 @@
+<view class="upload-page" wx:if="{{adoption}}">
+  <view class="info-bar">
+    <text class="info-veg">{{vegName}}</text>
+    <text class="info-detail">{{adoption.ownerName}} · {{adoption.code}} · 第{{growDays}}天</text>
+  </view>
+  <view class="section">
+    <text class="section-label">拍照（{{images.length}}/9）</text>
+    <view class="image-grid">
+      <view class="img-wrapper" wx:for="{{images}}" wx:key="*this"><image class="img-preview" src="{{item}}" mode="aspectFill" /><view class="img-remove" data-index="{{index}}" bindtap="removeImage">×</view></view>
+      <view class="img-add" bindtap="chooseImage" wx:if="{{images.length < 9}}"><text class="add-icon">📷</text><text class="add-text">拍照/相册</text></view>
+    </view>
+  </view>
+  <view class="section">
+    <text class="section-label">写点什么</text>
+    <textarea class="text-input" placeholder="记录今天的种植情况..." value="{{text}}" bindinput="onTextInput" maxlength="500" />
+    <quick-phrases bind:select="onPhraseSelect" />
+  </view>
+  <view class="section">
+    <text class="section-label">阶段变更（可选）</text>
+    <picker bindchange="onStageChange" value="{{stageIndex}}" range="{{stages}}" range-key="label"><view class="stage-picker">{{stages[stageIndex].label}}<text class="picker-arrow">▼</text></view></picker>
+  </view>
+  <button class="submit-btn" disabled="{{submitting}}" bindtap="onSubmit">{{submitting ? '上传中...' : '提交'}}</button>
+</view>

@@ -1,0 +1,9 @@
+.order-item { display: flex; background: #fff; padding: 24rpx 32rpx; border-bottom: 1rpx solid #f0f0f0; }
+.order-cover { width: 120rpx; height: 120rpx; border-radius: 12rpx; flex-shrink: 0; }
+.order-info { margin-left: 20rpx; flex: 1; }
+.order-name { font-size: 28rpx; font-weight: bold; display: block; }
+.order-meta { font-size: 22rpx; color: #999; display: block; margin-top: 4rpx; }
+.order-bottom { display: flex; justify-content: space-between; margin-top: 12rpx; }
+.order-price { font-size: 28rpx; color: #E53935; font-weight: bold; }
+.order-status { font-size: 22rpx; color: #4CAF50; }
+.empty, .loading { text-align: center; padding: 200rpx 0; color: #999; }

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "种点什么",
+  "usingComponents": {
+    "veg-card": "/components/veg-card/veg-card"
+  },
+  "enablePullDownRefresh": true
+}

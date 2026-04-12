@@ -10,3 +10,10 @@ backups/
 
 # Logs
 *.log
+
+# Dependencies
+node_modules/
+miniprogram_npm/
+
+# Others
+.superpowers/

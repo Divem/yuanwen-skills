@@ -1,0 +1,2 @@
+.phrases { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.phrase-tag { background: #FCE4EC; color: #E91E63; padding: 8rpx 20rpx; border-radius: 20rpx; font-size: 24rpx; }

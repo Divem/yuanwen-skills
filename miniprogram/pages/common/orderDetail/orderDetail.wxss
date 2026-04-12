@@ -1,0 +1,6 @@
+.detail { padding: 32rpx; }
+.detail-section { display: flex; justify-content: space-between; padding: 24rpx 0; border-bottom: 1rpx solid #f0f0f0; font-size: 28rpx; }
+.detail-label { color: #999; }
+.detail-status { color: #4CAF50; font-weight: bold; }
+.plate-section { margin-top: 40rpx; }
+.timeline-btn { margin-top: 40rpx; background: #4CAF50 !important; color: #fff !important; border-radius: 40rpx !important; }
