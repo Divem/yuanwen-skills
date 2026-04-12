@@ -6,10 +6,13 @@ Claude Code 自定义 Skills 合集，用于提升工作效率和自动化任务
 
 | 技能 | 说明 | 语言 |
 |------|------|------|
-| [feishu-doc-copier](feishu-doc-copier/) | 批量复制飞书文档（双模式：CLI + API） | 🇨🇳 中文 |
-| [deploy-and-send](deploy-and-send/) | 构建项目为 zip 并通过飞书发送 | 🇺🇸 英文 |
 | [skill-backup](skill-backup/) | 备份、同步和恢复自定义 Skills | 🇨🇳 中文 |
 | [feishu-send](feishu-send/) | 发送文件/消息到飞书用户或群组 | 🇺🇸 英文 |
+| [feishu-doc-copier](feishu-doc-copier/) | 批量复制飞书文档（双模式：CLI + API） | 🇨🇳 中文 |
+| [deploy-and-send](deploy-and-send/) | 构建项目为 zip 并通过飞书发送 | 🇺🇸 英文 |
+| [bilibili-comment-crawler](bilibili-comment-crawler/) | 批量采集B站视频评论并写入飞书表格 | 🇨🇳 中文 |
+| [douyin-comment-scraper](douyin-comment-scraper/) | 抓取抖音视频评论并导出到飞书 | 🇨🇳 中文 |
+| [douyin-search](douyin-search/) | 搜索抖音视频并提取元数据 | 🇨🇳 中文 |
 
 ## 🚀 快速开始
 
@@ -45,9 +48,21 @@ git push origin main
 ```
 yuanwen-skills/
 ├── README.md                    # 本文件
+├── bilibili-comment-crawler/   # B站评论采集
+│   ├── README.md
+│   ├── SKILL.md
+│   └── scripts/
+├── douyin-comment-scraper/     # 抖音评论抓取
+│   ├── README.md
+│   ├── SKILL.md
+│   └── scripts/
+├── douyin-search/              # 抖音视频搜索
+│   ├── README.md
+│   ├── SKILL.md
+│   └── scripts/
 ├── feishu-doc-copier/          # 飞书文档复制
-│   ├── README.md               # 详细使用文档
-│   ├── SKILL.md                # Claude Skill 定义
+│   ├── README.md
+│   ├── SKILL.md
 │   └── scripts/
 ├── deploy-and-send/            # 构建并发送
 │   ├── README.md
