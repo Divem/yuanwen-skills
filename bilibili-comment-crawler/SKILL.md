@@ -17,7 +17,26 @@ description: |
 - **Python 3**: 运行采集脚本
 - **curl**: API 请求依赖
 
-## Cookie 获取方式
+## Cookie 配置
+
+脚本按以下优先级读取 cookie：`--cookie 参数` > `BILIBILI_COOKIE 环境变量` > `cookie.json 配置文件`
+
+### 配置文件（推荐）
+
+编辑 `~/.claude/skills/bilibili-comment-crawler/cookie.json`：
+
+```json
+{
+  "SESSDATA": "xxx",
+  "bili_jct": "xxx",
+  "DedeUserID": "xxx",
+  "DedeUserID__ckMd5": "xxx"
+}
+```
+
+> 注意：`cookie.json` 包含敏感信息，共享 skill 时应排除此文件。
+
+### Cookie 获取方式
 
 1. Chrome 打开 bilibili.com 并登录
 2. F12 → Application → Cookies → `www.bilibili.com`

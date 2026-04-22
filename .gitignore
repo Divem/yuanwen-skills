@@ -17,3 +17,15 @@ miniprogram_npm/
 
 # Others
 .superpowers/
+
+# Sensitive data
+cookie.json
+.env
+.env.*
+!/.env.example
+
+# Output files
+*.csv
+*.json
+!package.json
+!package-lock.json

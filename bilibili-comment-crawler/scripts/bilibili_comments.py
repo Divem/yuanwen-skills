@@ -13,6 +13,7 @@ Options:
 """
 
 import sys
+import os
 import json
 import time
 import re
@@ -20,7 +21,22 @@ import subprocess
 import argparse
 
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+COOKIE_FILE = os.path.join(SCRIPT_DIR, "..", "cookie.json")
 COOKIES_ENV = "BILIBILI_COOKIE"
+
+
+def load_cookie_from_file():
+    if not os.path.exists(COOKIE_FILE):
+        return None
+    with open(COOKIE_FILE) as f:
+        data = json.load(f)
+    parts = []
+    for key in ("SESSDATA", "bili_jct", "DedeUserID", "DedeUserID__ckMd5"):
+        if key not in data or not data[key]:
+            return None
+        parts.append(f"{key}={data[key]}")
+    return "; ".join(parts)
 
 
 def fetch_page(oid, pn, ps, sort, cookies):
@@ -179,14 +195,20 @@ def main():
 
     import os
 
-    cookies = args.cookie or os.environ.get(COOKIES_ENV, "")
+    cookies = (
+        args.cookie or os.environ.get(COOKIES_ENV, "") or load_cookie_from_file() or ""
+    )
     if not cookies:
-        print("Error: provide --cookie or set BILIBILI_COOKIE env var", file=sys.stderr)
-        print(
-            "Required keys: SESSDATA, bili_jct, DedeUserID, DedeUserID__ckMd5",
-            file=sys.stderr,
-        )
+        print("Error: no cookie found. Provide one of:", file=sys.stderr)
+        print(f"  1. Edit {os.path.abspath(COOKIE_FILE)}", file=sys.stderr)
+        print(f"  2. Set {COOKIES_ENV} env var", file=sys.stderr)
+        print(f"  3. Pass --cookie argument", file=sys.stderr)
         sys.exit(1)
+
+    print(
+        f"Cookie source: {'config file' if load_cookie_from_file() and not args.cookie and not os.environ.get(COOKIES_ENV) else 'cli/env' if args.cookie or os.environ.get(COOKIES_ENV) else 'unknown'}",
+        file=sys.stderr,
+    )
 
     comments = fetch_comments(
         args.bv_id, cookies, args.limit, args.sort, include_sub=not args.no_sub

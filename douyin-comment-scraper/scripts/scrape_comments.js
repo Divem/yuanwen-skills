@@ -27,10 +27,17 @@ if (!videoUrl) {
 }
 
 let cookies = [];
+const configPath = path.join(__dirname, '..', 'config.json');
+if (fs.existsSync(configPath)) {
+  try {
+    cookies = JSON.parse(fs.readFileSync(configPath, 'utf-8')).cookies || [];
+  } catch (_) {}
+}
 if (cookieStr) {
   try {
     const raw = cookieStr.startsWith('@') ? fs.readFileSync(cookieStr.substring(1), 'utf-8') : cookieStr;
-    cookies = JSON.parse(raw);
+    const cliCookies = JSON.parse(raw);
+    cookies = cliCookies.length > 0 ? cliCookies : cookies;
   } catch (e) {
     console.error('Failed to parse cookies:', e.message);
     process.exit(1);
