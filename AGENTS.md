@@ -81,7 +81,9 @@ print(f"{'✓' if ok else '✗'} {msg}")
 
 ## Global Notes
 
-- **No shared dependencies** between miniprogram and feishu-doc-copier
+- **经验教训**
+  - 调用 skill 时用 `/skill-name` 让其自动执行，不要手动敲 cp 命令
+  - 执行复制命令前先检查目标目录结构
 - **No build/test scripts** defined at root level
 - **Git tracking**: Each sub-project should be considered independently
 - **Skill packaging**: `feishu-doc-copier/` can be packaged as `.skill` file via `skill-creator` tooling
