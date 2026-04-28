@@ -1,4 +1,4 @@
-# 达达的技能仓库 (Skills Repo)
+# 达尔文的技能仓库 (Skills Repo)
 
 Claude Code 自定义 Skills 合集，用于提升工作效率和自动化任务。
 
