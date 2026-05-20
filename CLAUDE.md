@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-达尔文的 Claude Code 自定义 Skills 合集。每个 skill 是一个独立工具，通过 `/skill-name` 斜杠命令调用。
+达尔文自定义 Skills 合集。每个 skill 是一个独立工具，通过 `/skill-name` 斜杠命令调用。
 
 ## Skill 结构标准
 
