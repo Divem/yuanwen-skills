@@ -9,14 +9,34 @@
 ```
 skill-name/
 ├── SKILL.md              # Claude 使用的技能定义（必需，frontmatter + 正文）
+│   ├── YAML frontmatter (name, description 必需)
+│   └── Markdown 指令
 ├── README.md             # 给用户的使用说明（必需，中文）
-├── scripts/              # 可执行脚本
-└── ...
+└── bundled/              # 可选资源
+    ├── scripts/          # 可执行脚本（确定性/重复性任务）
+    ├── references/       # 按需加载的参考文档
+    └── assets/           # 输出模板、图标、字体等资源
 ```
 
 - SKILL.md frontmatter 必须包含 `name` 和 `description` 字段
 - SKILL.md 语言不限（中文或英文均可）
 - README.md 使用中文
+
+### 渐进式加载
+
+Skills 使用三级加载系统，控制上下文大小：
+
+| 层级 | 内容 | 加载时机 | 建议大小 |
+|------|------|----------|----------|
+| 1. Metadata | `name` + `description` | 始终加载 | ~100 字 |
+| 2. SKILL.md 正文 | Markdown 指令 | Skill 触发时加载 | <500 行 |
+| 3. 资源文件 | scripts/references/assets | 按需加载 | 无限制 |
+
+**最佳实践：**
+- SKILL.md 正文控制在 500 行以内；超过时添加层级结构，用清晰的指针引导下一步
+- 从 SKILL.md 清楚引用参考文件，说明何时读取
+- 大参考文件 (>300 行) 必须包含目录
+- 按域组织参考文件（如 `references/aws.md`、`references/gcp.md`）
 
 ## 开发工作流
 
