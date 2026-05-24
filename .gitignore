@@ -24,6 +24,11 @@ cookie.json
 .env.*
 !/.env.example
 
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
 # Output files
 *.csv
 *.json
