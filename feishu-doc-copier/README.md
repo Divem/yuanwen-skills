@@ -461,3 +461,7 @@ MIT License - 自由使用和修改
 ---
 
 **Made with ❤️ for Feishu/Lark users**
+
+---
+
+[English Version](README.en.md)

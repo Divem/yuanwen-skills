@@ -60,3 +60,7 @@
 | 文档访问被拒 | 应用无权限 | 开通 `docx:document:readonly`，将文档分享给应用 |
 | 内容为空 | 文档为空或权限不足 | 检查 blocks 返回是否为空 |
 | 格式丢失 | 用了 `raw_content` 接口 | 改用 blocks API |
+
+---
+
+[English Version](README.en.md)

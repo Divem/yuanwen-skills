@@ -75,3 +75,7 @@ node scripts/douyin_search.js 短剧 --headless --feishu
 - 抖音 DOM 选择器使用混淆类名，可能随更新变化
 - 脚本内置 2-3.5s 随机延迟防限流
 - 默认使用有头模式方便调试
+
+---
+
+[English Version](README.en.md)

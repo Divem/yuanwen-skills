@@ -101,3 +101,7 @@ lark-cli sheets +create \
 - 子回复默认返回 3 条
 - 脚本内置 0.5s 延迟防限流
 - `cookie.json` 包含敏感信息，共享 skill 时应排除此文件
+
+---
+
+[English Version](README.en.md)

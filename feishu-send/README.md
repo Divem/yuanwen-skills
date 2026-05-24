@@ -79,3 +79,7 @@ lark-cli drive +upload --file "./filename" --name "filename-$(date +%Y%m%d-%H%M)
 - `--file` 只接受相对路径
 - 内容较长时，先写入临时文件再用 `--file` 发送
 - 群聊用 `--chat-id`，个人用 `--user-id`，二者互斥
+
+---
+
+[English Version](README.en.md)

@@ -1,30 +1,30 @@
 # docs-organizer
 
-Standardized documentation directory management for any project. Works as a Claude Code skill that bootstraps and audits your `docs/` folder. **Manual trigger only — never auto-activates**.
+标准化文档目录管理工具。作为 Claude Code Skill 使用，为新项目快速搭建 `docs/` 结构，或对已有文档目录进行诊断审计。**仅支持手动触发，不会自动激活**。
 
-## What it does
+## 功能特性
 
-- **Init** — Bootstrap a standardized `docs/` structure for new projects: directory scaffold, `docs-guide.md`, README indexes, and CLAUDE.md injection
-- **Diagnose** — Audit existing `docs/` directories, detect naming violations, misplaced files, missing cross-references, and produce a migration report
+- **Init** — 为新建项目搭建标准 `docs/` 结构：目录骨架、`docs-guide.md`、各目录索引 README，以及向 `CLAUDE.md` 注入文档管理规则
+- **Diagnose** — 审计现有 `docs/` 目录，检测命名违规、文件错位、缺失交叉引用，并生成迁移报告
 
-## Usage
+## 使用方法
 
-Invoke in any project:
+在任意项目中调用：
 
 ```
 /docs-organizer
 ```
 
-The skill auto-detects the right mode:
+Skill 自动检测当前情况并选择合适模式：
 
-| Situation | Mode |
+| 情况 | 模式 |
 |:---|:---|
-| No `docs/` directory | `init` |
-| Existing `docs/` directory | `diagnose` |
+| 无 `docs/` 目录 | `init` |
+| 已有 `docs/` 目录 | `diagnose` |
 
-### Init mode
+### Init 模式
 
-Creates the full documentation structure:
+创建完整文档结构：
 
 ```
 docs/
@@ -40,41 +40,41 @@ docs/
 └── raw-source/
 ```
 
-Plus:
-- `README.md` index in each directory
-- Documentation rules injected into `CLAUDE.md`
-- Config saved to `.claude/docs-organizer.yaml`
+额外创建：
+- 每个子目录的 `README.md` 索引
+- 文档规则注入到项目的 `CLAUDE.md`
+- 配置保存到 `.claude/docs-organizer.yaml`
 
-### Diagnose mode
+### Diagnose 模式
 
-Scans `docs/` and reports:
+扫描 `docs/` 并输出报告：
 
 ```
-✓ Compliant (14):
+✓ 合规 (14):
   docs/tech/database-schema.md
   ...
 
-⚠ Non-compliant (7):
+⚠ 不合规 (7):
   docs/PRD.md              → rename to prd/requirements.md
   docs/技术方案.md          → move to tech/, rename to kebab-case
   docs/old-plan.md         → archive to archive/old-plan.md
 
-⊘ Protected (2):
-  docs/superpowers/        (framework directory, skipped)
+⊘ 受保护 (2):
+  docs/superpowers/        (框架目录，跳过)
 ```
 
-Interactive migration with `git mv` to preserve history.
+支持交互式迁移，使用 `git mv` 保留历史记录。
 
-## Configuration
+## 配置
 
-Per-project config at `.claude/docs-organizer.yaml`:
+每个项目的配置文件位于 `.claude/docs-organizer.yaml`：
 
 ```yaml
-language: zh                          # zh or en
-protected_dirs:                       # Framework directories — never modify
+language: zh                          # zh 或 en
+protected_dirs:                       # 框架目录 — 绝不修改
   - superpowers
   - .vuepress
-enabled_dirs:                         # Which standard directories to create
+enabled_dirs:                         # 启用哪些标准目录
   - prd
   - tech
   - design
@@ -84,61 +84,65 @@ enabled_dirs:                         # Which standard directories to create
   - planning
   - archive
   - raw-source
-extra_dirs:                           # Custom directories beyond the standard set
+extra_dirs:                           # 标准目录之外的自定义目录
   # - decisions
 ```
 
-If no config exists, the skill runs an interactive Q&A on first use and saves the result.
+若不存在配置，首次运行时将进行交互式问答并保存结果。
 
-### Protected directories
+### 受保护目录
 
-Directories listed in `protected_dirs` are completely off-limits:
+`protected_dirs` 中列出的目录完全不可触碰：
 
-- Never moved, renamed, or restructured
-- Excluded from diagnose scans
+- 不移动、不更名、不重构
+- 诊断扫描时排除
 
-This handles framework-managed directories like `superpowers/`, `.vuepress/`, `.docusaurus/`, etc.
+用于处理框架管理的目录，如 `superpowers/`、`.vuepress/`、`.docusaurus/` 等。
 
-## Directory conventions
+## 目录规范
 
-| Directory | Purpose |
+| 目录 | 用途 |
 |:---|:---|
-| `prd/` | Product requirements, feature specs |
-| `tech/` | Technical docs, design docs (`-design` suffix), schema |
-| `design/` | UI/UX assets, brand, wireframes, reference images |
-| `handover/` | Module handoff docs for developers taking over |
-| `research/` | Forward-looking: tech research, feasibility, competitor analysis |
-| `reports/` | Retrospective: progress reports, code reviews |
-| `planning/` | Milestone plans, roadmaps (date-prefixed) |
-| `archive/` | Deprecated but retained docs |
-| `raw-source/` | External reference material (API docs, CLI manuals) |
+| `prd/` | 产品需求、功能规格 |
+| `tech/` | 技术文档、设计文档（`-design` 后缀）、Schema |
+| `design/` | UI/UX 素材、品牌、线框图、参考图 |
+| `handover/` | 模块交接文档，供接手开发者使用 |
+| `research/` | 前瞻性：技术研究、可行性分析、竞品分析 |
+| `reports/` | 回顾性：进度报告、代码评审 |
+| `planning/` | 里程碑计划、路线图（日期前缀） |
+| `archive/` | 已废弃但保留的文档 |
+| `raw-source/` | 外部参考资料（API 文档、CLI 手册） |
 
-## Naming rules
+## 命名规则
 
-- English kebab-case, no spaces or parentheses
-- No version suffixes (`v1`, `v2`, `final`) — Git tracks history
-- Tech design docs use `-design` suffix: `tech/{topic}-design.md`
-- Planning/reports use date prefix: `{YYYY-MM-DD}-{topic}-plan.md`
-- PRD ↔ tech design docs must have bidirectional links at file head
+- 英文 kebab-case，不含空格或括号
+- 不加版本后缀（`v1`、`v2`、`final`）— Git 已记录历史
+- 技术设计文档使用 `-design` 后缀：`tech/{topic}-design.md`
+- 计划/报告使用日期前缀：`{YYYY-MM-DD}-{topic}-plan.md`
+- PRD ↔ 技术设计文档必须在文件头部有双向链接
 
-## CLAUDE.md integration
+## CLAUDE.md 集成
 
-When `init` runs, a condensed rules section (~30 lines) is injected into the project's `CLAUDE.md`:
+`init` 运行时会将精简的规则片段（约 30 行）注入项目 `CLAUDE.md`：
 
-- No CLAUDE.md → created with the snippet
-- Existing CLAUDE.md without docs rules → section inserted
-- Existing CLAUDE.md with docs rules → merged (preserves custom rules, fills gaps)
+- 无 `CLAUDE.md` → 创建并写入片段
+- 已有 `CLAUDE.md` 但无文档规则 → 插入规则段落
+- 已有 `CLAUDE.md` 含文档规则 → 合并（保留自定义规则，填补缺失项）
 
-## File structure
+## 文件结构
 
 ```
 docs-organizer/
-├── SKILL.md                         # Main entry point
-├── README.md                        # This file
+├── SKILL.md                         # 主入口
+├── README.md                        # 本文件
 ├── references/
-│   ├── full-guide-template.md       # Parameterized docs-guide.md template
-│   ├── claude-md-snippet.md         # CLAUDE.md injection snippet
-│   └── directory-mapping.md         # Directory ↔ doc type mapping + naming patterns
+│   ├── full-guide-template.md       # 参数化 docs-guide.md 模板
+│   ├── claude-md-snippet.md         # 注入 CLAUDE.md 的代码片段
+│   └── directory-mapping.md         # 目录 ↔ 文档类型映射 + 命名规范
 └── scripts/
-    └── diagnose.sh                  # CLI diagnostic script
+    └── diagnose.sh                  # CLI 诊断脚本
 ```
+
+---
+
+[English Version](README.en.md)

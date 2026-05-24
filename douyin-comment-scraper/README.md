@@ -59,3 +59,7 @@ node scripts/upload_to_feishu.js \
 - 评论懒加载，每次滚动约加载 10-20 条
 - 连续 5 轮无新评论则自动停止
 - 抖音前端经常更新，如提取失败需检查 DOM 选择器
+
+---
+
+[English Version](README.en.md)

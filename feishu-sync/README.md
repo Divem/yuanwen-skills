@@ -54,3 +54,7 @@ python ~/.claude/skills/feishu-sync/scripts/sync.py <子命令> [选项]
 - Markdown 往返可能有格式损失
 - 文件大小限制 20MB
 - 飞书 drive/v1/files API 的 `folder_token` 参数不生效，新文件检测通过 `docs +search` + 时间戳过滤实现
+
+---
+
+[English Version](README.en.md)

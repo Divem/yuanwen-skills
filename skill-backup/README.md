@@ -220,3 +220,7 @@ my-skill/
 ---
 
 **所属**: [yuanwen-skills](../README.md)
+
+---
+
+[English Version](README.en.md)

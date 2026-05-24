@@ -119,3 +119,7 @@ KnowFlow OS 是一套基于文件系统的内容管理 harness，不绑定任何
 4. 调用 feishu-send 或直接对接小红书 API 自动发布
 
 实现"一句话选题 → 成品内容"的全自动流水线。
+
+---
+
+[English Version](README.en.md)
