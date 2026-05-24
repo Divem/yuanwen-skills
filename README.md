@@ -8,11 +8,11 @@ Claude Code 自定义 Skills 合集，用于提升工作效率和自动化任务
 
 | 技能 | 说明 | 语言 |
 |------|------|------|
-| [feishu-send](feishu-send/) | 发送文件/消息到飞书用户或群组 | 🇺🇸 英文 |
+| [feishu-send](feishu-send/) | 发送文件/消息到飞书用户或群组 | 🇨🇳 中文 |
 | [feishu-doc-copier](feishu-doc-copier/) | 批量复制飞书文档（双模式：CLI + API） | 🇨🇳 中文 |
 | [feishu-doc-download](feishu-doc-download/) | 下载飞书文档并转为本地 Markdown 文件 | 🇨🇳 中文 |
 | [feishu-sync](feishu-sync/) | 双向同步本地目录与飞书云文档 | 🇨🇳 中文 |
-| [deploy-and-send](deploy-and-send/) | 构建项目为 zip 并通过飞书发送 | 🇺🇸 英文 |
+| [deploy-and-send](deploy-and-send/) | 构建项目为 zip 并通过飞书发送 | 🇨🇳 中文 |
 
 ### 内容采集
 
@@ -21,6 +21,12 @@ Claude Code 自定义 Skills 合集，用于提升工作效率和自动化任务
 | [bilibili-comment-crawler](bilibili-comment-crawler/) | 批量采集B站视频评论并写入飞书表格 | 🇨🇳 中文 |
 | [douyin-comment-scraper](douyin-comment-scraper/) | 抓取抖音视频评论并导出到飞书 | 🇨🇳 中文 |
 | [douyin-search](douyin-search/) | 搜索抖音视频并提取元数据 | 🇨🇳 中文 |
+
+### 内容运营
+
+| 技能 | 说明 | 语言 |
+|------|------|------|
+| [knowflow-os](knowflow-os/) | AI 知识管理与内容运营系统 | 🇨🇳 中文 |
 
 ### 工具
 
@@ -94,6 +100,11 @@ yuanwen-skills/
 │   ├── SKILL.md
 │   ├── README.md
 │   └── scripts/
+├── knowflow-os/                # AI 知识管理与内容运营系统
+│   ├── SKILL.md
+│   ├── README.md
+│   ├── assets/
+│   └── references/
 └── skill-backup/               # Skills 备份工具
     ├── SKILL.md
     └── README.md
