@@ -1,0 +1,33 @@
+name: 瑜伽馆外部品牌传播
+description: 生成官网文案、媒体通稿、宣传册等品牌传播内容
+
+target_audience:
+  - 潜在客户
+  - 媒体
+  - 合作伙伴
+
+channels:
+  - website
+  - wechat-article
+  - brochure
+
+knowledge_asset_categories:
+  - brand
+  - courses
+  - people
+  - cases
+
+content_types:
+  - 品牌故事
+  - 课程介绍
+  - 团队介绍
+  - 成功案例
+  - 宣传册
+
+tone: 专业、可信、有温度
+frequency: 按需生成
+
+review_rules:
+  - 所有数据必须有来源
+  - 案例必须脱敏处理
+  - 品牌表述必须与品牌规范一致

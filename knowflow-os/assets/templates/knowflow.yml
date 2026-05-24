@@ -1,0 +1,59 @@
+project:
+  name: KnowFlow OS
+  slug: knowflow-os
+  language: zh-CN
+  description: AI 知识管理与自媒体运营系统
+
+paths:
+  inbox: 00-inbox
+  knowledge_base: 01-knowledge-base
+  scenarios: 02-scenarios
+  topic_pool: 03-topic-pool
+  content_factory: 04-content-factory
+  publish_center: 05-publish-center
+  review: 06-review
+  ip_assets: 07-ip-assets
+  templates: templates
+  workflows: workflows
+  skills: skills
+  metadata: metadata
+
+asset_categories:
+  - brand
+  - products
+  - courses
+  - people
+  - cases
+  - faq
+  - operations
+  - training
+  - research
+  - media-assets
+
+scenarios:
+  - student-content
+  - course-training
+  - external-pr
+  - sales-conversion
+  - community-operation
+  - teacher-branding
+  - recruitment
+  - internal-sop
+  - website-content
+
+channels:
+  - xiaohongshu
+  - wechat-article
+  - moments
+  - video-script
+  - ppt
+  - brochure
+  - website
+  - feishu-doc
+
+rules:
+  preserve_raw_files: true
+  require_metadata: true
+  require_source_reference: true
+  require_review_rules: true
+  duplicate_knowledge_assets: false

@@ -1,0 +1,32 @@
+name: 瑜伽馆学员内容运营
+description: 面向学员和潜在学员的小红书、朋友圈、社群内容运营
+
+target_audience:
+  - 现有学员
+  - 对瑜伽感兴趣的潜在学员
+  - 久坐办公人群
+
+channels:
+  - xiaohongshu
+  - moments
+
+knowledge_asset_categories:
+  - brand
+  - courses
+  - cases
+  - people
+
+content_types:
+  - 瑜伽干货
+  - 学员故事
+  - 老师分享
+  - 练习打卡
+  - 课程推荐
+
+tone: 亲切、实用、有温度
+frequency: 每周 3-5 篇
+
+review_rules:
+  - 不涉及未脱敏的学员个人信息
+  - 不使用夸大、绝对化表达
+  - 必须标注知识资产来源

@@ -1,0 +1,17 @@
+id: YS-AS-001
+name: 瑜伽馆品牌介绍
+category: brand
+type: brand-story
+tags:
+  - 瑜伽
+  - 品牌
+  - 定位
+  - 健康
+source: 品牌创始团队
+status: active
+created_at: "2026-05-23"
+updated_at: "2026-05-23"
+related_topics: []
+related_assets:
+  - YS-AS-003
+  - YS-AS-004

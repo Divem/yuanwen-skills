@@ -1,0 +1,29 @@
+name: 瑜伽课程与培训内容
+description: 生成课程大纲、培训课件、学员手册等教学材料
+
+target_audience:
+  - 报名学员
+  - 助教
+
+channels:
+  - ppt
+  - feishu-doc
+
+knowledge_asset_categories:
+  - courses
+  - brand
+  - people
+
+content_types:
+  - 课程大纲
+  - 培训课件
+  - 学员手册
+  - 动作说明卡
+
+tone: 专业、系统、清晰
+frequency: 按需生成
+
+review_rules:
+  - 课程结构必须完整
+  - 动作描述必须准确
+  - 必须包含安全提示
