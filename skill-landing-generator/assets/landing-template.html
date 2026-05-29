@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>feishu-sync · 本地目录与飞书云文档双向同步</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:        #ffffff;
+      --bg-soft:   #f7f7f5;
+      --paper:     #ffffff;
+      --ink:       #111111;
+      --ink-soft:  #555555;
+      --ink-mute:  #8a8a87;
+      --line:      #e6e6e3;
+      --line-soft: #ededea;
+      --accent:       #2563eb;
+      --accent-soft:  #eaf0ff;
+      --hl-string:    #059669;
+      --hl-number:    #d97706;
+      --hl-comment:   #8a8a87;
+      --sans: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --gutter: clamp(20px, 4vw, 72px);
+      --radius: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    /* ── Nav ── */
+    .nav { position: sticky; top: 0; z-index: 40; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); background: var(--bg); border-bottom: 1px solid var(--line); }
+    .nav-brand { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-weight: 700; font-size: 15px; text-decoration: none; color: var(--ink); }
+    .nav-brand .icon { width: 14px; height: 14px; border-radius: 3px; background: var(--accent); }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { font-size: 14px; color: var(--ink-soft); text-decoration: none; transition: color 140ms; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta { font-family: var(--mono); font-size: 13px; padding: 7px 18px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; transition: background 140ms, color 140ms; }
+    .nav-cta:hover { background: var(--ink); color: var(--bg); }
+
+    /* ── Frame / Narrow ── */
+    .frame { width: 100%; padding: 0 var(--gutter); }
+    .narrow { max-width: 980px; margin: 0 auto; }
+
+    /* ── Hero ── */
+    .hero { padding-top: clamp(70px, 12vw, 130px); padding-bottom: clamp(50px, 8vw, 100px); }
+    .hero .grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(40px, 6vw, 80px); align-items: center; max-width: 1160px; margin: 0 auto; }
+    .badge { display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 600; padding: 4px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg-soft); color: var(--accent); letter-spacing: 0.04em; margin-bottom: 20px; }
+    .hero h1 { font-size: clamp(36px, 4.6vw, 64px); font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; margin-bottom: 20px; }
+    .hero h1 .hero-sub { font-size: 0.5em; font-weight: 600; color: var(--ink-soft); letter-spacing: 0.02em; display: inline-block; margin-bottom: 6px; }
+    .hero h1 .hero-highlight { font-style: normal; background: linear-gradient(120deg, var(--accent-soft) 0%, var(--accent-soft) 100%); background-size: 100% 40%; background-repeat: no-repeat; background-position: 0 70%; padding: 0 4px; border-radius: 4px; }
+    .lede { font-size: clamp(16px, 1.5vw, 19px); color: var(--ink-soft); line-height: 1.65; margin-bottom: 28px; max-width: 520px; }
+    .btn-row { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn { font-family: var(--mono); font-size: 14px; padding: 11px 28px; border-radius: 8px; text-decoration: none; cursor: pointer; transition: background 140ms, color 140ms, border-color 140ms; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary { background: var(--ink); color: var(--bg); border: 1px solid var(--ink); }
+    .btn-primary:hover { background: #333; }
+    .btn-secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+    .btn-secondary:hover { border-color: var(--ink); background: var(--bg-soft); }
+
+    /* ── Terminal ── */
+    .terminal { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--bg); }
+    .terminal-bar { display: flex; align-items: center; justify-content: center; height: 40px; border-bottom: 1px solid var(--line); position: relative; gap: 8px; }
+    .terminal-bar .dots { display: flex; gap: 6px; position: absolute; left: 16px; }
+    .terminal-bar .dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+    .terminal-bar .title { font-family: var(--mono); font-size: 12px; color: var(--ink-mute); }
+    .terminal-body { padding: 22px 28px; font-family: var(--mono); font-size: 13px; line-height: 1.85; white-space: pre; overflow-x: auto; }
+    .prompt { color: var(--accent); font-weight: 600; }
+    .cmd { color: var(--ink); font-weight: 600; }
+    .arg { color: var(--accent); }
+    .str { color: var(--hl-string); }
+    .ok { color: var(--hl-string); font-weight: 600; }
+    .info { color: var(--accent); font-weight: 600; }
+    .warn { color: var(--hl-number); }
+    .mute { color: var(--ink-mute); }
+
+    /* ── Section ── */
+    .sec { padding: clamp(70px, 11vw, 120px) 0; }
+    .sec + .sec { border-top: 1px solid var(--line); }
+    .sec-title { font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .sec-desc { font-size: clamp(15px, 1.3vw, 17px); color: var(--ink-soft); max-width: 640px; line-height: 1.65; margin-bottom: 48px; }
+
+    /* ── Prereq ── */
+    .prereq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 56px); align-items: start; max-width: 1160px; margin: 0 auto; }
+    .prereq-grid .note { font-size: 14px; color: var(--ink-soft); line-height: 1.7; }
+    .prereq-grid .note strong { color: var(--ink); }
+    .code-block { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--bg-soft); }
+    .code-block pre { padding: 20px 24px; font-family: var(--mono); font-size: 13px; line-height: 1.85; overflow-x: auto; white-space: pre; }
+    .code-block .bar { display: flex; align-items: center; height: 36px; padding: 0 16px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 11px; color: var(--ink-mute); background: var(--bg); }
+
+    /* ── Features Grid ── */
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+    .feature { padding: 32px 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background 140ms; }
+    .feature:nth-child(3n) { border-right: none; }
+    .feature:nth-last-child(-n+3) { border-bottom: none; }
+    .feature:hover { background: var(--bg-soft); }
+    .feature-icon { width: 32px; height: 32px; border: 1px solid var(--line); border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 16px; color: var(--accent); background: var(--bg); }
+    .feature h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .feature p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+
+    /* ── Flow Steps ── */
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1160px; margin: 0 auto; }
+    .step { padding: 28px 24px; border: 1px solid var(--line); border-radius: var(--radius); position: relative; }
+    .step-count { position: absolute; top: 20px; right: 20px; font-family: var(--mono); font-size: 32px; font-weight: 700; color: var(--line-soft); line-height: 1; }
+    .step-tag { font-family: var(--mono); font-size: 11px; font-weight: 600; padding: 3px 10px; border: 1px solid var(--accent-soft); border-radius: 4px; background: var(--accent-soft); color: var(--accent); display: inline-block; margin-bottom: 12px; }
+    .step h4 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .step p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+
+    /* ── Usage Cards ── */
+    .usage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 1160px; margin: 0 auto; }
+    .usage-card { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+    .usage-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: var(--bg-soft); border-bottom: 1px solid var(--line); }
+    .usage-head .label { font-size: 14px; font-weight: 600; }
+    .usage-head .pill { font-family: var(--mono); font-size: 11px; font-weight: 600; padding: 3px 10px; border: 1px solid var(--accent-soft); border-radius: 4px; background: var(--accent-soft); color: var(--accent); }
+    .usage-body { padding: 20px; font-family: var(--mono); font-size: 13px; line-height: 1.85; white-space: pre-wrap; }
+    .usage-body .hl { color: var(--accent); font-weight: 600; }
+    .usage-body .val { color: var(--hl-string); }
+    .usage-body .arrow { color: var(--ink-mute); }
+    .usage-body .comment { color: var(--ink-mute); font-style: italic; }
+
+    /* ── CTA ── */
+    .cta-section { text-align: center; padding: clamp(70px, 11vw, 120px) 0; border-top: 1px solid var(--line); }
+    .cta-section h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .cta-section p { font-size: clamp(15px, 1.3vw, 17px); color: var(--ink-soft); margin-bottom: 32px; }
+
+    /* ── Footer ── */
+    footer { padding: 32px var(--gutter); border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-mute); display: flex; justify-content: space-between; align-items: center; }
+    footer a { color: var(--ink-soft); text-decoration: none; }
+    footer a:hover { color: var(--ink); }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .hero .grid { grid-template-columns: 1fr; }
+      .prereq-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 980px) {
+      .steps-grid { grid-template-columns: repeat(2, 1fr); }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .feature:nth-child(3n) { border-right: 1px solid var(--line); }
+      .feature:nth-child(2n) { border-right: none; }
+      .feature:nth-last-child(-n+2) { border-bottom: none; }
+    }
+    @media (max-width: 880px) {
+      .usage-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 760px) {
+      .nav-links { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feature { border-right: none !important; border-bottom: 1px solid var(--line); }
+      .feature:last-child { border-bottom: none; }
+    }
+    @media (max-width: 680px) {
+      .usage-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .hero h1 { font-size: clamp(32px, 9vw, 44px); }
+    }
+    @media (max-width: 540px) {
+      .steps-grid { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .feature, .btn, .nav-cta { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <a href="#" class="nav-brand">
+    <span class="icon"></span>
+    feishu-sync
+  </a>
+  <div class="nav-links">
+    <a href="#prereq">前置条件</a>
+    <a href="#features">功能</a>
+    <a href="#flow">流程</a>
+    <a href="#usage">用法</a>
+    <a href="feishu-sync-manual.html" class="nav-cta">完整手册 →</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero frame">
+  <div class="grid">
+    <div>
+      <span class="badge">CLAUDE SKILL</span>
+      <h1><span class="hero-sub">本地目录 · 飞书云文档</span><br><em class="hero-highlight">双向同步</em></h1>
+      <p class="lede">一个命令完成 init / push / pull / status，让本地 Markdown 与飞书文档始终保持同步。基于 lark-cli，支持增量同步与冲突检测。</p>
+      <div class="btn-row">
+        <a href="#usage" class="btn btn-primary">快速开始</a>
+        <a href="feishu-sync-manual.html" class="btn btn-secondary">阅读手册</a>
+      </div>
+    </div>
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="title">~ /feishu-sync</span>
+      </div>
+      <div class="terminal-body"><span class="prompt">$</span> <span class="cmd">/feishu-sync</span> <span class="arg">init</span> <span class="arg">--dir</span> <span class="str">docs</span> <span class="arg">--folder</span> <span class="str">https://xxx.feishu.cn/drive/folder/TOKEN</span>
+<span class="info">›</span> <span class="mute">扫描本地目录</span>     <span class="mute">发现 23 个文件，5 个子目录</span>
+<span class="info">›</span> <span class="mute">创建文件夹结构</span>   <span class="ok">✔ 完成</span>
+<span class="info">›</span> <span class="mute">上传文件</span>          <span class="ok">✔ 23/23 上传成功</span>
+<span class="info">›</span> <span class="mute">生成映射文件</span>      <span class="ok">✔ .feishu-sync.json</span>
+<span class="ok">✔ 初始化完成 · 映射已建立</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- Prereq -->
+<section id="prereq" class="sec frame">
+  <div class="prereq-grid">
+    <div>
+      <h2 class="sec-title">前置条件</h2>
+      <p class="sec-desc">开始使用前，确保以下工具已就绪。全部检查通过后即可一键同步。</p>
+      <div class="note">
+        <p><strong>lark-cli</strong> 已安装并完成认证。运行 <code style="font-family:var(--mono);font-size:0.88em;padding:2px 6px;border-radius:3px;background:var(--bg-soft);">lark-cli doctor</code> 确认全部 pass。</p>
+        <p style="margin-top:12px"><strong>drive:drive scope</strong> 权限已授权。运行 <code style="font-family:var(--mono);font-size:0.88em;padding:2px 6px;border-radius:3px;background:var(--bg-soft);">lark-cli auth check --scope drive:drive</code> 检查。</p>
+        <p style="margin-top:12px"><strong>Python 3</strong> 已安装。</p>
+      </div>
+    </div>
+    <div class="code-block">
+      <div class="bar">终端</div>
+      <pre><span class="mute"># 安装并认证 lark-cli</span>
+<span class="prompt">$</span> lark-cli doctor
+<span class="ok">✔</span> 全部检查通过
+
+<span class="mute"># 确认 drive scope</span>
+<span class="prompt">$</span> lark-cli auth check <span class="arg">--scope</span> <span class="str">drive:drive</span>
+<span class="ok">✔</span> scope 已授权
+
+<span class="mute"># 如缺少 scope，执行</span>
+<span class="prompt">$</span> lark-cli auth login <span class="arg">--scope</span> <span class="str">drive:drive</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features" class="sec frame">
+  <div class="narrow">
+    <h2 class="sec-title">核心功能</h2>
+    <p class="sec-desc">覆盖同步全流程——从首次建立映射到日常增量同步与状态检查。</p>
+  </div>
+  <div style="max-width:1160px;margin:0 auto;">
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon">↕</div>
+        <h4>双向同步</h4>
+        <p>push 推送本地变更到飞书，pull 拉取飞书变更到本地。增量检测，只处理变化的文件。</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⟷</div>
+        <h4>冲突检测</h4>
+        <p>status 命令三向对比，自动识别本地改、飞书改、双边改（冲突），标记清晰。</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⚡</div>
+        <h4>批量加速</h4>
+        <p>飞书元数据批量查询（每批 200 个），快速定位变更文件，大幅减少 API 调用。</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📄</div>
+        <h4>智能文件处理</h4>
+        <p>.md 文件走飞书文档（富文本），其他文件走云盘上传。自动识别文件类型。</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📁</div>
+        <h4>目录结构映射</h4>
+        <p>自动在飞书创建与本地一致的文件夹结构，保持层级关系完整。</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <h4>SHA256 校验</h4>
+        <p>基于文件哈希检测变更，确保只同步真正修改过的文件，避免无意义覆盖。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Flow -->
+<section id="flow" class="sec frame">
+  <div class="narrow">
+    <h2 class="sec-title">同步流程</h2>
+    <p class="sec-desc">从初始化到日常使用的四步工作流。</p>
+  </div>
+  <div class="steps-grid">
+    <div class="step">
+      <span class="step-count">01</span>
+      <span class="step-tag">init</span>
+      <h4>首次初始化</h4>
+      <p>扫描本地目录，在飞书创建对应文件夹，上传所有文件，生成 .feishu-sync.json 映射文件。</p>
+    </div>
+    <div class="step">
+      <span class="step-count">02</span>
+      <span class="step-tag">push</span>
+      <h4>推送变更</h4>
+      <p>对比本地文件哈希，增量创建新文档、更新已有文档。新目录自动创建飞书文件夹。</p>
+    </div>
+    <div class="step">
+      <span class="step-count">03</span>
+      <span class="step-tag">pull</span>
+      <h4>拉取变更</h4>
+      <p>批量查询飞书元数据，检测修改时间变化，拉取更新后的文档内容到本地。</p>
+    </div>
+    <div class="step">
+      <span class="step-count">04</span>
+      <span class="step-tag">status</span>
+      <h4>查看状态</h4>
+      <p>三向对比显示 → ← ⟷ + - 标记，快速掌握同步状态，发现潜在冲突。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Usage -->
+<section id="usage" class="sec frame">
+  <div class="narrow">
+    <h2 class="sec-title">用法示例</h2>
+    <p class="sec-desc">常用命令一览。--dir 默认为 docs 目录。</p>
+  </div>
+  <div class="usage-grid">
+    <div class="usage-card">
+      <div class="usage-head">
+        <span class="label">初始化同步</span>
+        <span class="pill">首次</span>
+      </div>
+      <div class="usage-body"><span class="hl">/feishu-sync</span> <span class="val">init</span> <span class="arrow">\</span>
+  <span class="val">--dir</span> docs <span class="arrow">\</span>
+  <span class="val">--folder</span> <span class="str">https://xxx.feishu.cn/drive/folder/TOKEN</span>
+<span class="arrow">→</span> 建立映射，全量上传</div>
+    </div>
+    <div class="usage-card">
+      <div class="usage-head">
+        <span class="label">推送本地变更</span>
+        <span class="pill">最常用</span>
+      </div>
+      <div class="usage-body"><span class="hl">/feishu-sync</span> <span class="val">push</span>
+<span class="arrow">→</span> 增量同步到飞书
+<span class="comment"># 新文件自动创建</span>
+<span class="comment"># 已修改文件覆盖更新</span></div>
+    </div>
+    <div class="usage-card">
+      <div class="usage-head">
+        <span class="label">拉取飞书变更</span>
+        <span class="pill">拉取</span>
+      </div>
+      <div class="usage-body"><span class="hl">/feishu-sync</span> <span class="val">pull</span>
+<span class="arrow">→</span> 拉取飞书最新内容
+<span class="comment"># .md → docs +fetch</span>
+<span class="comment"># 其他 → drive +download</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Status Symbols -->
+<section class="sec frame">
+  <div class="narrow">
+    <h2 class="sec-title">状态标记</h2>
+    <p class="sec-desc">status 命令输出的差异标记说明。</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:32px;">
+      <div style="padding:20px;border:1px solid var(--line);border-radius:var(--radius);">
+        <span style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--accent);">→</span>
+        <span style="font-weight:600;margin-left:12px;">本地改了</span>
+        <p style="font-size:14px;color:var(--ink-soft);margin-top:6px;">待 push 推送到飞书</p>
+      </div>
+      <div style="padding:20px;border:1px solid var(--line);border-radius:var(--radius);">
+        <span style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--hl-string);">←</span>
+        <span style="font-weight:600;margin-left:12px;">飞书改了</span>
+        <p style="font-size:14px;color:var(--ink-soft);margin-top:6px;">待 pull 拉取到本地</p>
+      </div>
+      <div style="padding:20px;border:1px solid var(--line);border-radius:var(--radius);">
+        <span style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--hl-number);">⟷</span>
+        <span style="font-weight:600;margin-left:12px;">双边冲突</span>
+        <p style="font-size:14px;color:var(--ink-soft);margin-top:6px;">需人工合并：先 pull → 合并 → push</p>
+      </div>
+      <div style="padding:20px;border:1px solid var(--line);border-radius:var(--radius);">
+        <span style="font-family:var(--mono);font-size:20px;font-weight:700;color:var(--ink-mute);">+ −</span>
+        <span style="font-weight:600;margin-left:12px;">新增 / 删除</span>
+        <p style="font-size:14px;color:var(--ink-soft);margin-top:6px;">本地新增文件或已删除文件</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section frame">
+  <h2>开始同步你的文档</h2>
+  <p>一个命令，本地与飞书双向同步。</p>
+  <div class="btn-row" style="justify-content:center;">
+    <a href="#usage" class="btn btn-primary">/feishu-sync init</a>
+    <a href="feishu-sync-manual.html" class="btn btn-secondary">完整手册</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <span>© 2026 imyuanwen@gmail.com</span>
+  <a href="feishu-sync-manual.html">完整手册 →</a>
+</footer>
+
+</body>
+</html>

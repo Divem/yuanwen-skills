@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>feishu-sync 手册 · 本地目录与飞书云文档双向同步</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:        #ffffff;
+      --bg-soft:   #f7f7f5;
+      --paper:     #ffffff;
+      --ink:       #111111;
+      --ink-soft:  #555555;
+      --ink-mute:  #8a8a87;
+      --line:      #e6e6e3;
+      --line-soft: #ededea;
+      --accent:       #2563eb;
+      --accent-soft:  #eaf0ff;
+      --hl-string:    #059669;
+      --hl-number:    #d97706;
+      --hl-comment:   #8a8a87;
+      --warn:       #d97706;  --warn-soft: #fef3c7;
+      --info:       #2563eb;  --info-soft: #eaf0ff;
+      --sans: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --gutter: clamp(20px, 4vw, 72px);
+      --radius: 10px;
+      --sidebar: 260px;
+      --toc: 220px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3, h4 { scroll-margin-top: 80px; letter-spacing: -0.02em; }
+    code { font-family: var(--mono); font-size: 0.88em; padding: 2px 6px; border-radius: 3px; background: var(--bg-soft); }
+    pre { font-family: var(--mono); }
+
+    /* ── Progress Bar ── */
+    .progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: var(--accent); z-index: 100; width: 0; transition: width 60ms; }
+
+    /* ── Topbar ── */
+    .topbar { position: sticky; top: 0; z-index: 40; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+    .topbar-brand { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-weight: 700; font-size: 15px; text-decoration: none; color: var(--ink); }
+    .topbar-brand .icon { width: 14px; height: 14px; border-radius: 3px; background: var(--accent); }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .topbar-back { font-size: 14px; color: var(--ink-soft); text-decoration: none; transition: color 140ms; }
+    .topbar-back:hover { color: var(--ink); }
+    .menu-btn { display: none; background: none; border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; cursor: pointer; font-size: 18px; line-height: 1; color: var(--ink); }
+
+    /* ── Three Column Layout ── */
+    .layout { display: grid; grid-template-columns: var(--sidebar) 1fr var(--toc); max-width: calc(var(--sidebar) + 1100px + var(--toc)); margin: 0 auto; min-height: calc(100vh - 60px); }
+
+    /* ── Sidebar ── */
+    .sidebar { position: sticky; top: 60px; height: calc(100vh - 60px); overflow-y: auto; border-right: 1px solid var(--line); padding: 24px 0; background: var(--bg); }
+    .sidebar-group { margin-bottom: 24px; }
+    .sidebar-group-title { font-family: var(--mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-mute); padding: 0 24px; margin-bottom: 8px; }
+    .sidebar a { display: block; padding: 7px 24px; font-size: 14px; color: var(--ink-soft); text-decoration: none; border-left: 2px solid transparent; transition: background 140ms, color 140ms, border-color 140ms; }
+    .sidebar a:hover { color: var(--ink); background: var(--bg-soft); }
+    .sidebar a.active { color: var(--accent); background: var(--accent-soft); border-left-color: var(--accent); font-weight: 600; }
+
+    /* ── Main Content ── */
+    .main { padding: 48px clamp(28px, 4vw, 64px); max-width: 1100px; min-width: 0; }
+
+    /* Page Header */
+    .page-header { margin-bottom: 48px; }
+    .eyebrow { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+    .page-header h1 { font-size: clamp(28px, 4vw, 44px); font-weight: 700; margin-bottom: 12px; }
+    .page-lede { font-size: clamp(16px, 1.5vw, 19px); color: var(--ink-soft); line-height: 1.65; max-width: 600px; }
+    .page-meta { display: flex; gap: 20px; margin-top: 16px; font-family: var(--mono); font-size: 12px; color: var(--ink-mute); }
+
+    /* Headings */
+    .main h2 { font-size: clamp(22px, 3vw, 30px); font-weight: 700; margin-top: 56px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+    .main h3 { font-size: clamp(18px, 2.2vw, 22px); font-weight: 700; margin-top: 36px; margin-bottom: 12px; }
+
+    /* Paragraphs */
+    .main p { font-size: clamp(15px, 1.3vw, 17px); color: var(--ink); line-height: 1.7; margin-bottom: 16px; }
+    .main p.mute { color: var(--ink-soft); }
+
+    /* ── Code Block ── */
+    .code-block { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin: 20px 0; background: var(--bg-soft); }
+    .code-block .bar { display: flex; align-items: center; justify-content: space-between; height: 36px; padding: 0 16px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 11px; color: var(--ink-mute); background: var(--bg); }
+    .code-block pre { padding: 20px 24px; font-size: 13px; line-height: 1.85; overflow-x: auto; white-space: pre; }
+    .tk-c { color: var(--hl-comment); font-style: italic; }
+    .tk-k { color: var(--accent); font-weight: 600; }
+    .tk-s { color: var(--hl-string); }
+    .tk-n { color: var(--hl-number); }
+    .tk-cm { color: var(--accent); font-weight: 700; }
+    .tk-p { color: var(--ink); }
+
+    /* ── Table ── */
+    .main table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    .main th { text-align: left; font-weight: 600; padding: 10px 14px; border-bottom: 2px solid var(--line); font-size: 13px; color: var(--ink-soft); }
+    .main td { padding: 10px 14px; border-bottom: 1px solid var(--line-soft); }
+    .main tr:hover { background: var(--bg-soft); }
+
+    /* ── Callout ── */
+    .callout { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding: 16px 20px; border-radius: var(--radius); margin: 20px 0; font-size: 14px; line-height: 1.65; }
+    .callout-warn { background: var(--warn-soft); border: 1px solid #fcd34d; color: #78350f; }
+    .callout-warn .callout-icon { background: var(--warn); color: #fff; }
+    .callout-info { background: var(--info-soft); border: 1px solid #93c5fd; color: #1e3a8a; }
+    .callout-info .callout-icon { background: var(--info); color: #fff; }
+    .callout-tip { background: var(--info-soft); border: 1px solid #86efac; color: #14532d; }
+    .callout-tip .callout-icon { background: var(--hl-string); color: #fff; }
+    .callout-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+
+    /* ── TOC ── */
+    .toc { position: sticky; top: 60px; height: calc(100vh - 60px); overflow-y: auto; padding: 24px 0; border-left: 1px solid var(--line); }
+    .toc-title { font-family: var(--mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-mute); padding: 0 20px; margin-bottom: 12px; }
+    .toc a { display: block; padding: 5px 20px; font-size: 13px; color: var(--ink-mute); text-decoration: none; border-left: 2px solid transparent; transition: color 140ms, border-color 140ms; line-height: 1.5; }
+    .toc a:hover { color: var(--ink); }
+    .toc a.active { color: var(--accent); border-left-color: var(--accent); font-weight: 600; }
+    .toc a.toc-h3 { padding-left: 32px; font-size: 12px; }
+
+    /* ── Prev/Next Nav ── */
+    .page-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--line); }
+    .nav-card { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); text-decoration: none; color: var(--ink); transition: transform 180ms, border-color 140ms; }
+    .nav-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .nav-card .label { font-family: var(--mono); font-size: 11px; color: var(--ink-mute); margin-bottom: 6px; }
+    .nav-card .title { font-weight: 600; }
+    .nav-card.next { text-align: right; }
+
+    /* ── Footer ── */
+    .manual-footer { padding: 32px 0; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-mute); margin-top: 0; }
+
+    /* ── Mobile Sidebar ── */
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 50; }
+    @media (max-width: 1180px) { .toc { display: none; } }
+    @media (max-width: 880px) {
+      .sidebar { display: none; position: fixed; top: 60px; left: 0; bottom: 0; z-index: 60; background: var(--bg); width: 280px; }
+      .sidebar.open { display: block; }
+      .sidebar-overlay.open { display: block; }
+      .menu-btn { display: block; }
+      .layout { grid-template-columns: 1fr; }
+      .page-nav { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 540px) {
+      .page-nav { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .nav-card:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Topbar -->
+<nav class="topbar">
+  <a href="feishu-sync-landing.html" class="topbar-brand">
+    <span class="icon"></span>
+    feishu-sync
+  </a>
+  <div class="topbar-right">
+    <a href="feishu-sync-landing.html" class="topbar-back">← 落地页</a>
+    <button class="menu-btn" id="menuBtn" aria-label="打开菜单">☰</button>
+  </div>
+</nav>
+
+<!-- Mobile Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Three Column Layout -->
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-group">
+      <div class="sidebar-group-title">开始</div>
+      <a href="#overview" data-section="overview">概述</a>
+      <a href="#prerequisites" data-section="prerequisites">前置条件</a>
+      <a href="#quick-start" data-section="quick-start">快速开始</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-title">命令</div>
+      <a href="#init" data-section="init">init — 初始化</a>
+      <a href="#push" data-section="push">push — 推送</a>
+      <a href="#pull" data-section="pull">pull — 拉取</a>
+      <a href="#status" data-section="status">status — 状态</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-title">进阶</div>
+      <a href="#file-handling" data-section="file-handling">文件处理规则</a>
+      <a href="#conflict" data-section="conflict">冲突处理</a>
+      <a href="#state-file" data-section="state-file">映射文件</a>
+      <a href="#limitations" data-section="limitations">限制与注意</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main" id="content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="eyebrow">MANUAL</div>
+      <h1>feishu-sync 使用手册</h1>
+      <p class="page-lede">本地目录与飞书云文档的双向同步工具。支持 init / push / pull / status 四种操作，覆盖从首次建立映射到日常增量同步的全流程。</p>
+      <div class="page-meta">
+        <span>版本 1.0</span>
+        <span>更新于 2026-05</span>
+      </div>
+    </div>
+
+    <!-- Overview -->
+    <section id="overview">
+      <h2>概述</h2>
+      <p>feishu-sync 是一个基于 lark-cli 的双向同步工具，用于在本地文件目录与飞书云文档之间建立映射关系并保持内容同步。</p>
+      <p>它通过 SHA256 哈希检测本地文件变更，通过飞书元数据修改时间检测远端变更，实现增量同步，避免不必要的 API 调用。</p>
+      <div class="callout callout-info">
+        <div class="callout-icon">i</div>
+        <div><strong>核心设计：</strong>.md 文件走飞书文档 API（支持富文本编辑），其他文件走云盘文件上传/下载。映射关系存储在 <code>.feishu-sync.json</code> 中。</div>
+      </div>
+    </section>
+
+    <!-- Prerequisites -->
+    <section id="prerequisites">
+      <h2>前置条件</h2>
+      <p>使用 feishu-sync 前需确保以下条件满足：</p>
+      <table>
+        <thead>
+          <tr><th>条件</th><th>检查方式</th><th>修复方式</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>lark-cli</strong> 已安装并认证</td>
+            <td><code>lark-cli doctor</code></td>
+            <td>安装 lark-cli 并完成登录认证</td>
+          </tr>
+          <tr>
+            <td><strong>drive:drive scope</strong> 已授权</td>
+            <td><code>lark-cli auth check --scope drive:drive</code></td>
+            <td><code>lark-cli auth login --scope drive:drive</code></td>
+          </tr>
+          <tr>
+            <td><strong>Python 3</strong> 已安装</td>
+            <td><code>python3 --version</code></td>
+            <td>安装 Python 3</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="code-block">
+        <div class="bar">验证前置条件</div>
+        <pre><span class="tk-c"># 检查 lark-cli 状态</span>
+<span class="tk-cm">$</span> lark-cli doctor
+<span class="tk-s">✔ 全部检查通过</span>
+
+<span class="tk-c"># 确认 drive scope</span>
+<span class="tk-cm">$</span> lark-cli auth check <span class="tk-k">--scope</span> <span class="tk-s">drive:drive</span>
+<span class="tk-s">✔ scope 已授权</span></pre>
+      </div>
+    </section>
+
+    <!-- Quick Start -->
+    <section id="quick-start">
+      <h2>快速开始</h2>
+      <p>三步完成首次同步：</p>
+      <div class="code-block">
+        <div class="bar">终端</div>
+        <pre><span class="tk-c"># 1. 初始化：建立映射并上传</span>
+<span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> init <span class="tk-k">--dir</span> <span class="tk-s">docs</span> <span class="tk-k">--folder</span> <span class="tk-s">https://xxx.feishu.cn/drive/folder/TOKEN</span>
+
+<span class="tk-c"># 2. 查看同步状态</span>
+<span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> status <span class="tk-k">--dir</span> <span class="tk-s">docs</span>
+
+<span class="tk-c"># 3. 推送本地变更</span>
+<span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> push <span class="tk-k">--dir</span> <span class="tk-s">docs</span></pre>
+      </div>
+    </section>
+
+    <!-- init -->
+    <section id="init">
+      <h2>init — 首次初始化</h2>
+      <p>扫描本地目录，在飞书创建对应的文件夹结构，上传所有文件，生成映射文件 <code>.feishu-sync.json</code>。</p>
+      <div class="code-block">
+        <div class="bar">命令</div>
+        <pre><span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> init <span class="tk-k">--dir</span> <span class="tk-s">&lt;本地目录&gt;</span> <span class="tk-k">--folder</span> <span class="tk-s">&lt;飞书URL或token&gt;</span></pre>
+      </div>
+      <h3>参数说明</h3>
+      <table>
+        <thead>
+          <tr><th>参数</th><th>必填</th><th>默认值</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--dir</code></td><td>否</td><td><code>docs</code></td><td>要同步的本地目录路径</td></tr>
+          <tr><td><code>--folder</code></td><td>是</td><td>—</td><td>飞书文件夹 URL 或纯 token</td></tr>
+        </tbody>
+      </table>
+      <h3>执行流程</h3>
+      <table>
+        <thead>
+          <tr><th>步骤</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>扫描本地目录，收集所有文件和子目录</td></tr>
+          <tr><td>2</td><td>在飞书创建对应的文件夹结构</td></tr>
+          <tr><td>3</td><td>逐个上传文件（.md → 文档，其他 → 云盘文件）</td></tr>
+          <tr><td>4</td><td>生成 <code>.feishu-sync.json</code> 映射文件</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-tip">
+        <div class="callout-icon">✓</div>
+        <div><strong>建议：</strong>飞书侧使用空文件夹进行初始化，避免文件名冲突。<code>--folder</code> 支持完整 URL（<code>https://xxx.feishu.cn/drive/folder/TOKEN</code>）或纯 token。</div>
+      </div>
+    </section>
+
+    <!-- push -->
+    <section id="push">
+      <h2>push — 推送本地变更</h2>
+      <p>检测本地文件哈希变化，增量创建或更新飞书文档。</p>
+      <div class="code-block">
+        <div class="bar">命令</div>
+        <pre><span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> push <span class="tk-k">--dir</span> <span class="tk-s">&lt;本地目录&gt;</span></pre>
+      </div>
+      <h3>处理规则</h3>
+      <table>
+        <thead>
+          <tr><th>本地状态</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>新文件</td><td>创建飞书文档（.md）或上传云盘文件</td></tr>
+          <tr><td>修改的文件</td><td>更新飞书文档内容（overwrite 模式）</td></tr>
+          <tr><td>新目录</td><td>自动创建飞书文件夹</td></tr>
+          <tr><td>本地已删除</td><td>列出提示，不自动删除飞书侧</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-warn">
+        <div class="callout-icon">!</div>
+        <div><strong>注意：</strong>本地删除的文件不会自动从飞书删除，仅提示。这是有意设计，防止误删飞书文档。</div>
+      </div>
+    </section>
+
+    <!-- pull -->
+    <section id="pull">
+      <h2>pull — 拉取飞书变更</h2>
+      <p>批量查询飞书元数据修改时间，拉取变更文件到本地。</p>
+      <div class="code-block">
+        <div class="bar">命令</div>
+        <pre><span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> pull <span class="tk-k">--dir</span> <span class="tk-s">&lt;本地目录&gt;</span></pre>
+      </div>
+      <h3>工作原理</h3>
+      <table>
+        <thead>
+          <tr><th>步骤</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>批量元数据查询</td><td>通过 <code>drive metas batch_query</code> 批量检测（每批 200 个）</td></tr>
+          <tr><td>变更文件拉取</td><td>.md 文件通过 <code>docs +fetch</code> 获取 Markdown；其他文件通过 <code>drive +download</code> 下载</td></tr>
+          <tr><td>新文件检测</td><td>使用 <code>docs +search</code> 按时间过滤，检测飞书侧新建的文件</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- status -->
+    <section id="status">
+      <h2>status — 查看同步状态</h2>
+      <p>三向对比本地和飞书差异，输出清晰的标记符号。</p>
+      <div class="code-block">
+        <div class="bar">命令</div>
+        <pre><span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> status <span class="tk-k">--dir</span> <span class="tk-s">&lt;本地目录&gt;</span></pre>
+      </div>
+      <h3>标记说明</h3>
+      <table>
+        <thead>
+          <tr><th>标记</th><th>含义</th><th>建议操作</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code style="color:var(--accent);font-weight:700;">→</code></td><td>本地改了，待 push</td><td>执行 push</td></tr>
+          <tr><td><code style="color:var(--hl-string);font-weight:700;">←</code></td><td>飞书改了，待 pull</td><td>执行 pull</td></tr>
+          <tr><td><code style="color:var(--hl-number);font-weight:700;">⟷</code></td><td>双边都改了（冲突）</td><td>先 pull → 合并 → push</td></tr>
+          <tr><td><code>+</code></td><td>本地新增文件</td><td>执行 push</td></tr>
+          <tr><td><code>−</code></td><td>本地已删除文件</td><td>确认是否需要删除飞书侧</td></tr>
+          <tr><td><code style="color:var(--ink-mute);">↓</code></td><td>飞书新增文件</td><td>执行 pull</td></tr>
+        </tbody>
+      </table>
+      <div class="code-block">
+        <div class="bar">输出示例</div>
+        <pre><span class="tk-c"># 输出示例</span>
+<span style="color:var(--accent);">→</span>  <span class="tk-k">README.md</span>            <span class="tk-c">本地已修改</span>
+<span style="color:var(--hl-string);">←</span>  <span class="tk-k">api-guide.md</span>          <span class="tk-c">飞书已修改</span>
+<span style="color:var(--hl-number);">⟷</span> <span class="tk-k">config.md</span>             <span class="tk-c">双边都改了</span>
+<span class="tk-k">+</span>  <span class="tk-s">new-feature.md</span>        <span class="tk-c">本地新增</span>
+<span class="tk-k">−</span>  <span class="tk-s">old-doc.md</span>            <span class="tk-c">本地已删除</span></pre>
+      </div>
+    </section>
+
+    <!-- File Handling -->
+    <section id="file-handling">
+      <h2>文件处理规则</h2>
+      <p>feishu-sync 根据文件扩展名选择不同的同步策略：</p>
+      <table>
+        <thead>
+          <tr><th>文件类型</th><th>本地格式</th><th>飞书存储</th><th>创建方式</th><th>读取方式</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>.md</code> 文件</td>
+            <td>原始 Markdown</td>
+            <td>飞书文档（富文本）</td>
+            <td><code>docs +create</code></td>
+            <td><code>docs +fetch</code></td>
+          </tr>
+          <tr>
+            <td>其他文件</td>
+            <td>原始文件</td>
+            <td>云盘文件</td>
+            <td><code>drive +upload</code></td>
+            <td><code>drive +download</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout callout-info">
+        <div class="callout-icon">i</div>
+        <div><strong>为什么 .md 走文档？</strong>飞书文档支持富文本在线编辑，团队成员可以直接在飞书修改内容，然后通过 pull 拉回本地。其他二进制文件（图片、PDF 等）走云盘上传下载。</div>
+      </div>
+    </section>
+
+    <!-- Conflict -->
+    <section id="conflict">
+      <h2>冲突处理</h2>
+      <p>当 status 显示 <code style="color:var(--hl-number);font-weight:700;">⟷</code> 时，表示同一文件在本地和飞书都被修改了。</p>
+      <h3>处理步骤</h3>
+      <div class="code-block">
+        <div class="bar">冲突解决流程</div>
+        <pre><span class="tk-c"># 1. 先 pull 保留飞书版本</span>
+<span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> pull
+
+<span class="tk-c"># 2. 手动合并内容</span>
+<span class="tk-c">#   打开本地文件，将飞书侧的修改合并进来</span>
+
+<span class="tk-c"># 3. 推送合并结果</span>
+<span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> push</pre>
+      </div>
+      <div class="callout callout-warn">
+        <div class="callout-icon">!</div>
+        <div><strong>重要：</strong>pull 操作会使用飞书版本覆盖本地文件。请确保在 pull 前备份本地修改，或先手动合并。</div>
+      </div>
+    </section>
+
+    <!-- State File -->
+    <section id="state-file">
+      <h2>映射文件 .feishu-sync.json</h2>
+      <p>映射文件自动生成在 <code>--dir</code> 的<strong>父目录</strong>中，记录了本地文件与飞书文档的对应关系。</p>
+      <div class="code-block">
+        <div class="bar">.feishu-sync.json 结构</div>
+        <pre>{
+  <span class="tk-k">"version"</span>: <span class="tk-s">"1.0"</span>,
+  <span class="tk-k">"folder_token"</span>: <span class="tk-s">"fldcnXXXXXX"</span>,
+  <span class="tk-k">"local_base"</span>: <span class="tk-s">"docs"</span>,
+  <span class="tk-k">"folder_map"</span>: {
+    <span class="tk-k">"sub-dir"</span>: <span class="tk-s">"fldcnYYYYYY"</span>
+  },
+  <span class="tk-k">"files"</span>: {
+    <span class="tk-k">"README.md"</span>: {
+      <span class="tk-k">"token"</span>: <span class="tk-s">"doccnZZZZZZ"</span>,
+      <span class="tk-k">"type"</span>: <span class="tk-s">"doc"</span>,
+      <span class="tk-k">"local_hash"</span>: <span class="tk-s">"sha256..."</span>,
+      <span class="tk-k">"feishu_modified"</span>: <span class="tk-s">"2026-05-29T10:00:00Z"</span>
+    }
+  }
+}</pre>
+      </div>
+      <h3>字段说明</h3>
+      <table>
+        <thead>
+          <tr><th>字段</th><th>类型</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>folder_token</code></td><td>string</td><td>飞书根文件夹 token</td></tr>
+          <tr><td><code>local_base</code></td><td>string</td><td>本地同步目录名</td></tr>
+          <tr><td><code>folder_map</code></td><td>object</td><td>子目录名 → 飞书文件夹 token 映射</td></tr>
+          <tr><td><code>files.*.token</code></td><td>string</td><td>飞书文档/文件 token</td></tr>
+          <tr><td><code>files.*.type</code></td><td>string</td><td><code>"doc"</code>（文档）或 <code>"file"</code>（云盘）</td></tr>
+          <tr><td><code>files.*.local_hash</code></td><td>string</td><td>本地文件 SHA256 哈希</td></tr>
+          <tr><td><code>files.*.feishu_modified</code></td><td>string</td><td>飞书最后修改时间</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-tip">
+        <div class="callout-icon">✓</div>
+        <div><strong>提示：</strong>将 <code>.feishu-sync.json</code> 加入 <code>.gitignore</code>，避免映射文件被提交到版本控制。</div>
+      </div>
+    </section>
+
+    <!-- Limitations -->
+    <section id="limitations">
+      <h2>限制与注意事项</h2>
+      <table>
+        <thead>
+          <tr><th>限制</th><th>说明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>文件路径</td><td><code>drive +upload</code> 要求相对路径，不可用绝对路径</td></tr>
+          <tr><td>文件大小</td><td>单文件限制 20MB</td></tr>
+          <tr><td>Markdown 格式</td><td>飞书 Markdown ≠ 标准 Markdown，往返可能有格式损失</td></tr>
+          <tr><td>删除操作</td><td>本地删除不会自动删除飞书侧文件</td></tr>
+          <tr><td>批量查询</td><td>每批最多 200 个文件元数据</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Prev/Next Nav -->
+    <div class="page-nav">
+      <a href="feishu-sync-landing.html" class="nav-card">
+        <div class="label">← 上一页</div>
+        <div class="title">落地页</div>
+      </a>
+      <a href="#overview" class="nav-card next">
+        <div class="label">回到顶部 ↑</div>
+        <div class="title">概述</div>
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <div class="manual-footer">
+      © 2026 imyuanwen@gmail.com · feishu-sync v1.0
+    </div>
+  </main>
+
+  <!-- TOC (auto-generated by JS) -->
+  <aside class="toc" id="toc">
+    <div class="toc-title">本页目录</div>
+  </aside>
+</div>
+
+<script>
+(function() {
+  // ── TOC Generation ──
+  var toc = document.getElementById('toc');
+  var main = document.getElementById('content');
+  var headings = main.querySelectorAll('h2, h3');
+
+  headings.forEach(function(h) {
+    if (!h.id) return;
+    var a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    if (h.tagName === 'H3') a.classList.add('toc-h3');
+    toc.appendChild(a);
+  });
+
+  // ── ScrollSpy ──
+  var tocLinks = toc.querySelectorAll('a');
+  var sections = [];
+  headings.forEach(function(h) {
+    if (!h.id) return;
+    sections.push({ id: h.id, el: h });
+  });
+
+  // Sidebar links
+  var sidebarLinks = document.querySelectorAll('.sidebar a[data-section]');
+
+  function onScroll() {
+    var scrollTop = window.scrollY;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    // Progress bar
+    var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    document.getElementById('progressBar').style.width = progress + '%';
+
+    // Active section
+    var current = '';
+    sections.forEach(function(s) {
+      if (s.el.getBoundingClientRect().top < 120) {
+        current = s.id;
+      }
+    });
+
+    tocLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+
+    sidebarLinks.forEach(function(a) {
+      a.classList.toggle('active', a.getAttribute('data-section') === current);
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ── Mobile Menu ──
+  var menuBtn = document.getElementById('menuBtn');
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebarOverlay');
+
+  menuBtn.addEventListener('click', function() {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+  });
+  overlay.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  });
+
+  // Close sidebar on link click (mobile)
+  sidebarLinks.forEach(function(a) {
+    a.addEventListener('click', function() {
+      if (window.innerWidth <= 880) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
