@@ -103,7 +103,7 @@
     .feature p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
 
     /* ── Flow Steps ── */
-    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 1160px; margin: 0 auto; }
+    .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; max-width: 1160px; margin: 0 auto; }
     .step { padding: 28px 24px; border: 1px solid var(--line); border-radius: var(--radius); position: relative; }
     .step-count { position: absolute; top: 20px; right: 20px; font-family: var(--mono); font-size: 32px; font-weight: 700; color: var(--line-soft); line-height: 1; }
     .step-tag { font-family: var(--mono); font-size: 11px; font-weight: 600; padding: 3px 10px; border: 1px solid var(--accent-soft); border-radius: 4px; background: var(--accent-soft); color: var(--accent); display: inline-block; margin-bottom: 12px; }
@@ -111,7 +111,7 @@
     .step p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
 
     /* ── Usage Cards ── */
-    .usage-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; max-width: 1160px; margin: 0 auto; }
+    .usage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; max-width: 1160px; margin: 0 auto; }
     .usage-card { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
     .usage-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; background: var(--bg-soft); border-bottom: 1px solid var(--line); }
     .usage-head .label { font-size: 14px; font-weight: 600; }
@@ -138,14 +138,10 @@
       .prereq-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 980px) {
-      .steps-grid { grid-template-columns: repeat(2, 1fr); }
       .features-grid { grid-template-columns: repeat(2, 1fr); }
       .feature:nth-child(3n) { border-right: 1px solid var(--line); }
       .feature:nth-child(2n) { border-right: none; }
       .feature:nth-last-child(-n+2) { border-bottom: none; }
-    }
-    @media (max-width: 880px) {
-      .usage-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 760px) {
       .nav-links { display: none; }
@@ -153,14 +149,8 @@
       .feature { border-right: none !important; border-bottom: 1px solid var(--line); }
       .feature:last-child { border-bottom: none; }
     }
-    @media (max-width: 680px) {
-      .usage-grid { grid-template-columns: 1fr; }
-    }
     @media (max-width: 640px) {
       .hero h1 { font-size: clamp(32px, 9vw, 44px); }
-    }
-    @media (max-width: 540px) {
-      .steps-grid { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -291,32 +281,56 @@
 <section id="flow" class="sec frame">
   <div class="narrow">
     <h2 class="sec-title">同步流程</h2>
-    <p class="sec-desc">从初始化到日常使用的四步工作流。</p>
+    <p class="sec-desc">从初始化到日常使用的完整工作流程。</p>
   </div>
   <div class="steps-grid">
     <div class="step">
       <span class="step-count">01</span>
-      <span class="step-tag">init</span>
-      <h4>首次初始化</h4>
-      <p>扫描本地目录，在飞书创建对应文件夹，上传所有文件，生成 .feishu-sync.json 映射文件。</p>
+      <span class="step-tag">scan</span>
+      <h4>扫描本地目录</h4>
+      <p>递归扫描本地目录，收集所有 Markdown 文件和二进制文件，生成完整文件清单。</p>
     </div>
     <div class="step">
       <span class="step-count">02</span>
-      <span class="step-tag">push</span>
-      <h4>推送变更</h4>
-      <p>对比本地文件哈希，增量创建新文档、更新已有文档。新目录自动创建飞书文件夹。</p>
+      <span class="step-tag">mkdir</span>
+      <h4>创建文件夹结构</h4>
+      <p>在飞书创建与本地一致的文件夹层级结构，保持目录关系完整。</p>
     </div>
     <div class="step">
       <span class="step-count">03</span>
-      <span class="step-tag">pull</span>
-      <h4>拉取变更</h4>
-      <p>批量查询飞书元数据，检测修改时间变化，拉取更新后的文档内容到本地。</p>
+      <span class="step-tag">upload</span>
+      <h4>上传文件</h4>
+      <p>.md 走飞书文档 API（富文本），其他文件走云盘上传。生成 .feishu-sync.json 映射文件。</p>
     </div>
     <div class="step">
       <span class="step-count">04</span>
+      <span class="step-tag">push</span>
+      <h4>增量推送</h4>
+      <p>对比本地文件 SHA256 哈希，增量创建新文档、更新已有文档。新目录自动创建飞书文件夹。</p>
+    </div>
+    <div class="step">
+      <span class="step-count">05</span>
+      <span class="step-tag">batch</span>
+      <h4>批量检测</h4>
+      <p>通过飞书元数据批量查询（每批 200 个），快速定位远端变更文件，大幅减少 API 调用。</p>
+    </div>
+    <div class="step">
+      <span class="step-count">06</span>
+      <span class="step-tag">pull</span>
+      <h4>拉取变更</h4>
+      <p>检测飞书修改时间变化，同时通过 search 检测飞书新增文件。.md 走 docs +fetch，其他走 drive +download。</p>
+    </div>
+    <div class="step">
+      <span class="step-count">07</span>
       <span class="step-tag">status</span>
-      <h4>查看状态</h4>
-      <p>三向对比显示 → ← ⟷ + - 标记，快速掌握同步状态，发现潜在冲突。</p>
+      <h4>三向对比</h4>
+      <p>显示 → ← ⟷ + - ↓ 标记，三向对比本地与飞书状态，快速掌握同步情况。</p>
+    </div>
+    <div class="step">
+      <span class="step-count">08</span>
+      <span class="step-tag">merge</span>
+      <h4>冲突处理</h4>
+      <p>发现 ⟷ 冲突标记时，先 pull 保留飞书版本，手动合并内容，再 push 推送合并结果。</p>
     </div>
   </div>
 </section>
@@ -325,7 +339,7 @@
 <section id="usage" class="sec frame">
   <div class="narrow">
     <h2 class="sec-title">用法示例</h2>
-    <p class="sec-desc">常用命令一览。--dir 默认为 docs 目录。</p>
+    <p class="sec-desc">全部命令与典型场景。--dir 默认为 docs 目录。</p>
   </div>
   <div class="usage-grid">
     <div class="usage-card">
@@ -356,7 +370,61 @@
       <div class="usage-body"><span class="hl">/feishu-sync</span> <span class="val">pull</span>
 <span class="arrow">→</span> 拉取飞书最新内容
 <span class="comment"># .md → docs +fetch</span>
-<span class="comment"># 其他 → drive +download</span></div>
+<span class="comment"># 其他 → drive +download</span>
+<span class="comment"># 自动检测飞书新增文件</span></div>
+    </div>
+    <div class="usage-card">
+      <div class="usage-head">
+        <span class="label">查看同步状态</span>
+        <span class="pill">状态</span>
+      </div>
+      <div class="usage-body"><span class="hl">/feishu-sync</span> <span class="val">status</span>
+<span class="arrow">→</span> 三向对比同步状态
+<span class="comment"># → 本地改了</span>
+<span class="comment"># ← 飞书改了</span>
+<span class="comment"># ⟷ 双边冲突</span></div>
+    </div>
+    <div class="usage-card">
+      <div class="usage-head">
+        <span class="label">指定目录推送</span>
+        <span class="pill">进阶</span>
+      </div>
+      <div class="usage-body"><span class="hl">/feishu-sync</span> <span class="val">push</span> <span class="val">--dir</span> <span class="str">my-notes</span>
+<span class="arrow">→</span> 同步指定目录到飞书
+<span class="comment"># 适用于多目录场景</span>
+<span class="comment"># 需已对该目录执行过 init</span></div>
+    </div>
+    <div class="usage-card">
+      <div class="usage-head">
+        <span class="label">指定目录拉取</span>
+        <span class="pill">进阶</span>
+      </div>
+      <div class="usage-body"><span class="hl">/feishu-sync</span> <span class="val">pull</span> <span class="val">--dir</span> <span class="str">my-notes</span>
+<span class="arrow">→</span> 拉取指定目录的飞书变更
+<span class="comment"># 检测该目录的远端修改</span>
+<span class="comment"># 同时拉取飞书新增文件</span></div>
+    </div>
+    <div class="usage-card">
+      <div class="usage-head">
+        <span class="label">指定目录状态</span>
+        <span class="pill">进阶</span>
+      </div>
+      <div class="usage-body"><span class="hl">/feishu-sync</span> <span class="val">status</span> <span class="val">--dir</span> <span class="str">my-notes</span>
+<span class="arrow">→</span> 查看指定目录同步状态
+<span class="comment"># 检查特定目录的差异</span>
+<span class="comment"># 了解哪些文件需要处理</span></div>
+    </div>
+    <div class="usage-card">
+      <div class="usage-head">
+        <span class="label">冲突解决流程</span>
+        <span class="pill">冲突</span>
+      </div>
+      <div class="usage-body"><span class="comment"># 发现 ⟷ 冲突标记时</span>
+<span class="hl">/feishu-sync</span> <span class="val">pull</span>
+<span class="arrow">→</span> 先拉取，保留飞书版本
+<span class="comment"># 手动合并本地与飞书内容</span>
+<span class="hl">/feishu-sync</span> <span class="val">push</span>
+<span class="arrow">→</span> 推送合并后的结果</div>
     </div>
   </div>
 </section>

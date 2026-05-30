@@ -207,7 +207,7 @@
 └─────────────────────┘
 ```
 
-- 网格：4 列（桌面）→ 2 列（< 980px）→ 1 列（< 540px）
+- 网格：`repeat(auto-fit, minmax(240px, 1fr))`，自适应列数，不限制步骤数量。桌面端自然呈现 4 列，随视口缩小自动换行
 - 标签样式：11px，1px 边框，accent 色
 
 ### 5.6 用法示例卡片 (Usage Card)
@@ -223,7 +223,7 @@
 ```
 
 - 头部标签(pill)：11px，accent 边框+背景
-- 网格：3 列 → 2 列（< 1080px）→ 1 列（< 680px）
+- 网格：`repeat(auto-fit, minmax(320px, 1fr))`，自适应列数，不限制卡片数量。桌面端自然呈现 3 列，随视口缩小自动换行
 
 ### 5.7 配置展示 (Config)
 
@@ -288,8 +288,8 @@ Nav (sticky)
 ├── Prereq (两栏：说明 + 代码)
 ├── Server Policy (3 列卡片)
 ├── Features (3×3 网格)
-├── Flow (4 步骤)
-├── Usage (3 列卡片)
+├── Flow (N 步骤，auto-fit 网格)
+├── Usage (N 列卡片，auto-fit 网格)
 ├── Keynote (两栏：关键词 + 示例)
 ├── Config (两栏：代码 + 字段)
 ├── Resources (2 列链接)
@@ -316,12 +316,12 @@ Topbar (sticky, blur backdrop)
 |------|------|
 | 1180px | 手册页隐藏右侧 TOC |
 | 1024px | Hero 双栏 → 单栏 |
-| 980px | 特性/流程网格 3/4 列 → 1/2 列；手册页 Policy 3 列 → 1 列 |
+| 980px | 特性网格 3 列 → 2 列；手册页 Policy 3 列 → 1 列 |
 | 880px | 手册页隐藏 Sidebar，显示 ☰ 菜单；Keynote/Config 双栏 → 单栏 |
 | 760px | 落地页隐藏 nav-links；资源卡片 2 列 → 1 列 |
-| 680px | Usage 卡片 2 列 → 1 列 |
+| 680px | Usage 卡片自动换行 |
 | 640px | Hero 标题缩小 |
-| 540px | Flow 步骤 2 列 → 1 列；手册页底部导航双列 → 单列 |
+| 540px | Flow 步骤自动换行；手册页底部导航双列 → 单列 |
 
 ---
 
