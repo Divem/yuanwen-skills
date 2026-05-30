@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>feishu-sync 手册 · 本地目录与飞书云文档双向同步</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='28' height='28' rx='7' fill='%232563eb'/%3E%3Cpath d='M16.5 4L9 15h4.5L11.5 24 20 12h-5z' fill='%23fff' stroke='%23fff' stroke-width='0.5' stroke-linejoin='round'/%3E%3Ccircle cx='8.5' cy='6.5' r='1.2' fill='%23fff' opacity='.6'/%3E%3Ccircle cx='20.5' cy='22' r='1' fill='%23fff' opacity='.4'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -44,7 +45,8 @@
     /* ── Topbar ── */
     .topbar { position: sticky; top: 0; z-index: 40; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
     .topbar-brand { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-weight: 700; font-size: 15px; text-decoration: none; color: var(--ink); }
-    .topbar-brand .icon { width: 14px; height: 14px; border-radius: 3px; background: var(--accent); }
+    .topbar-brand .logo { width: 28px; height: 28px; flex-shrink: 0; }
+    .topbar-brand .logo svg { display: block; }
     .topbar-right { display: flex; align-items: center; gap: 16px; }
     .topbar-back { font-size: 14px; color: var(--ink-soft); text-decoration: none; transition: color 140ms; }
     .topbar-back:hover { color: var(--ink); }
@@ -123,7 +125,9 @@
     .nav-card.next { text-align: right; }
 
     /* ── Footer ── */
-    .manual-footer { padding: 32px 0; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-mute); margin-top: 0; }
+    .manual-footer { border-top: 1px solid var(--line); padding: 28px 0; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--ink-mute); margin-top: 56px; }
+    .manual-footer a { color: var(--ink-soft); text-decoration: none; }
+    .manual-footer a:hover { color: var(--ink); }
 
     /* ── Mobile Sidebar ── */
     .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 50; }
@@ -152,12 +156,17 @@
 
 <!-- Topbar -->
 <nav class="topbar">
-  <a href="feishu-sync-landing.html" class="topbar-brand">
-    <span class="icon"></span>
+  <a href="./index.html" class="topbar-brand">
+    <span class="logo"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="28" height="28" rx="7" fill="#2563eb"/>
+      <path d="M16.5 4L9 15h4.5L11.5 24 20 12h-5z" fill="#fff" stroke="#fff" stroke-width="0.5" stroke-linejoin="round"/>
+      <circle cx="8.5" cy="6.5" r="1.2" fill="#fff" opacity=".6"/>
+      <circle cx="20.5" cy="22" r="1" fill="#fff" opacity=".4"/>
+    </svg></span>
     feishu-sync
   </a>
   <div class="topbar-right">
-    <a href="feishu-sync-landing.html" class="topbar-back">← 落地页</a>
+    <a href="landing-template.html" class="topbar-back">← 落地页</a>
     <button class="menu-btn" id="menuBtn" aria-label="打开菜单">☰</button>
   </div>
 </nav>
@@ -502,7 +511,7 @@
 
     <!-- Prev/Next Nav -->
     <div class="page-nav">
-      <a href="feishu-sync-landing.html" class="nav-card">
+      <a href="landing-template.html" class="nav-card">
         <div class="label">← 上一页</div>
         <div class="title">落地页</div>
       </a>
@@ -514,7 +523,8 @@
 
     <!-- Footer -->
     <div class="manual-footer">
-      © 2026 imyuanwen@gmail.com · feishu-sync v1.0
+      <span>&copy; 2026 imyuanwen@gmail.com</span>
+      <span><a href="https://github.com/Divem/yuanwen-skills/tree/main/skill-landing-generator" target="_blank">Skill 说明书生成器</a> / <a href="https://okjk.co/aMLfdX" target="_blank">即刻主页</a></span>
     </div>
   </main>
 

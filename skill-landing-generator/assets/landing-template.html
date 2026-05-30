@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>feishu-sync · 本地目录与飞书云文档双向同步</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='28' height='28' rx='7' fill='%232563eb'/%3E%3Cpath d='M16.5 4L9 15h4.5L11.5 24 20 12h-5z' fill='%23fff' stroke='%23fff' stroke-width='0.5' stroke-linejoin='round'/%3E%3Ccircle cx='8.5' cy='6.5' r='1.2' fill='%23fff' opacity='.6'/%3E%3Ccircle cx='20.5' cy='22' r='1' fill='%23fff' opacity='.4'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -34,12 +35,13 @@
     /* ── Nav ── */
     .nav { position: sticky; top: 0; z-index: 40; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); background: var(--bg); border-bottom: 1px solid var(--line); }
     .nav-brand { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-weight: 700; font-size: 15px; text-decoration: none; color: var(--ink); }
-    .nav-brand .icon { width: 14px; height: 14px; border-radius: 3px; background: var(--accent); }
+    .nav-brand .logo { width: 28px; height: 28px; flex-shrink: 0; }
+    .nav-brand .logo svg { display: block; }
     .nav-links { display: flex; gap: 28px; align-items: center; }
     .nav-links a { font-size: 14px; color: var(--ink-soft); text-decoration: none; transition: color 140ms; }
     .nav-links a:hover { color: var(--ink); }
-    .nav-cta { font-family: var(--mono); font-size: 13px; padding: 7px 18px; border: 1px solid var(--line); border-radius: 6px; background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; transition: background 140ms, color 140ms; }
-    .nav-cta:hover { background: var(--ink); color: var(--bg); }
+    .nav-cta { font-family: var(--mono); font-size: 13px; padding: 7px 18px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); cursor: pointer; text-decoration: none; transition: all 140ms; }
+    .nav-cta:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
 
     /* ── Frame / Narrow ── */
     .frame { width: 100%; padding: 0 var(--gutter); }
@@ -51,7 +53,7 @@
     .badge { display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 600; padding: 4px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg-soft); color: var(--accent); letter-spacing: 0.04em; margin-bottom: 20px; }
     .hero h1 { font-size: clamp(36px, 4.6vw, 64px); font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; margin-bottom: 20px; }
     .hero h1 .hero-sub { font-size: 0.5em; font-weight: 600; color: var(--ink-soft); letter-spacing: 0.02em; display: inline-block; margin-bottom: 6px; }
-    .hero h1 .hero-highlight { font-style: normal; background: linear-gradient(120deg, var(--accent-soft) 0%, var(--accent-soft) 100%); background-size: 100% 40%; background-repeat: no-repeat; background-position: 0 70%; padding: 0 4px; border-radius: 4px; }
+    .hero h1 .hero-highlight { font-style: normal; color: var(--accent); }
     .lede { font-size: clamp(16px, 1.5vw, 19px); color: var(--ink-soft); line-height: 1.65; margin-bottom: 28px; max-width: 520px; }
     .btn-row { display: flex; gap: 14px; flex-wrap: wrap; }
     .btn { font-family: var(--mono); font-size: 14px; padding: 11px 28px; border-radius: 8px; text-decoration: none; cursor: pointer; transition: background 140ms, color 140ms, border-color 140ms; display: inline-flex; align-items: center; gap: 8px; }
@@ -126,7 +128,7 @@
     .cta-section p { font-size: clamp(15px, 1.3vw, 17px); color: var(--ink-soft); margin-bottom: 32px; }
 
     /* ── Footer ── */
-    footer { padding: 32px var(--gutter); border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-mute); display: flex; justify-content: space-between; align-items: center; }
+    footer { border-top: 1px solid var(--line); padding: 28px var(--gutter); display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--ink-mute); max-width: 1240px; margin: 0 auto; }
     footer a { color: var(--ink-soft); text-decoration: none; }
     footer a:hover { color: var(--ink); }
 
@@ -170,8 +172,13 @@
 
 <!-- Nav -->
 <nav class="nav">
-  <a href="#" class="nav-brand">
-    <span class="icon"></span>
+  <a href="index.html" class="nav-brand">
+    <span class="logo"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="28" height="28" rx="7" fill="#2563eb"/>
+      <path d="M16.5 4L9 15h4.5L11.5 24 20 12h-5z" fill="#fff" stroke="#fff" stroke-width="0.5" stroke-linejoin="round"/>
+      <circle cx="8.5" cy="6.5" r="1.2" fill="#fff" opacity=".6"/>
+      <circle cx="20.5" cy="22" r="1" fill="#fff" opacity=".4"/>
+    </svg></span>
     feishu-sync
   </a>
   <div class="nav-links">
@@ -179,7 +186,7 @@
     <a href="#features">功能</a>
     <a href="#flow">流程</a>
     <a href="#usage">用法</a>
-    <a href="feishu-sync-manual.html" class="nav-cta">完整手册 →</a>
+    <a href="manual-template.html" class="nav-cta">完整手册 →</a>
   </div>
 </nav>
 
@@ -187,12 +194,12 @@
 <header class="hero frame">
   <div class="grid">
     <div>
-      <span class="badge">CLAUDE SKILL</span>
-      <h1><span class="hero-sub">本地目录 · 飞书云文档</span><br><em class="hero-highlight">双向同步</em></h1>
+      <span class="badge">Agent SKILL</span>
+      <h1><span class="hero-sub">本地目录 · 飞书云文档</span><br><em class="hero-highlight">轻松实现双向同步</em></h1>
       <p class="lede">一个命令完成 init / push / pull / status，让本地 Markdown 与飞书文档始终保持同步。基于 lark-cli，支持增量同步与冲突检测。</p>
       <div class="btn-row">
         <a href="#usage" class="btn btn-primary">快速开始</a>
-        <a href="feishu-sync-manual.html" class="btn btn-secondary">阅读手册</a>
+        <a href="manual-template.html" class="btn btn-secondary">阅读手册</a>
       </div>
     </div>
     <div class="terminal">
@@ -390,14 +397,14 @@
   <p>一个命令，本地与飞书双向同步。</p>
   <div class="btn-row" style="justify-content:center;">
     <a href="#usage" class="btn btn-primary">/feishu-sync init</a>
-    <a href="feishu-sync-manual.html" class="btn btn-secondary">完整手册</a>
+    <a href="manual-template.html" class="btn btn-secondary">完整手册</a>
   </div>
 </section>
 
 <!-- Footer -->
 <footer>
-  <span>© 2026 imyuanwen@gmail.com</span>
-  <a href="feishu-sync-manual.html">完整手册 →</a>
+  <span>&copy; 2026 imyuanwen@gmail.com</span>
+  <span><a href="https://github.com/Divem/yuanwen-skills/tree/main/skill-landing-generator" target="_blank">Skill 说明书生成器</a> / <a href="https://okjk.co/aMLfdX" target="_blank">即刻主页</a></span>
 </footer>
 
 </body>

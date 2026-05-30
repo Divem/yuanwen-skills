@@ -1,11 +1,11 @@
 ---
 name: skill-landing-generator
-description: 为 Claude Skill 生成统一的落地页（landing）和手册页（manual）HTML。基于统一设计规范，确保所有 Skill 介绍页面视觉语言一致。触发场景：(1) 用户要求为某个 skill 生成 landing/介绍页面；(2) 用户要求为某个 skill 生成 manual/手册/文档页面；(3) 用户要求生成 skill 介绍页、文档页。输入：skill 名称 + skill 文档内容。输出：两个 HTML 文件。
+description: 为 Agent Skill 生成统一的落地页（landing）和手册页（manual）HTML。基于统一设计规范，确保所有 Skill 介绍页面视觉语言一致。触发场景：(1) 用户要求为某个 skill 生成 landing/介绍页面；(2) 用户要求为某个 skill 生成 manual/手册/文档页面；(3) 用户要求生成 skill 介绍页、文档页。输入：skill 名称 + skill 文档内容。输出：两个 HTML 文件。
 ---
 
 # Skill Landing Generator
 
-为任意 Claude Skill 生成一对统一风格的 HTML 页面：**落地页** + **手册页**。
+为任意 Agent Skill 生成一对统一风格的 HTML 页面：**落地页** + **手册页**。
 
 ## 设计规范
 

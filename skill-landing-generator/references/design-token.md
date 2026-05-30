@@ -54,6 +54,17 @@
 - **边框统一**：全部使用 `1px solid var(--line)`，无阴影边框
 - **hover 反馈**：背景色过渡到 `var(--bg-soft)` 或 `var(--accent-soft)`
 
+### 2.5 浏览器图标 (Favicon)
+
+所有页面使用内联 SVG favicon，与导航栏 logo 保持一致（蓝色圆角方底 + 白色闪电）：
+
+```html
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='28' height='28' rx='7' fill='%232563eb'/%3E%3Cpath d='M16.5 4L9 15h4.5L11.5 24 20 12h-5z' fill='%23fff' stroke='%23fff' stroke-width='0.5' stroke-linejoin='round'/%3E%3Ccircle cx='8.5' cy='6.5' r='1.2' fill='%23fff' opacity='.6'/%3E%3Ccircle cx='20.5' cy='22' r='1' fill='%23fff' opacity='.4'/%3E%3C/svg%3E">
+```
+
+- 使用 data URI 编码，无需外部图片文件
+- 放置在 `<title>` 标签之后
+
 ---
 
 ## 3. 字体系统
@@ -120,12 +131,12 @@
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│ ■ brand      link link link link link link    [CTA] │  height: 60px
+│ 🔺 brand     link link link link link link    [CTA] │  height: 60px
 │                                                     │  border-bottom: 1px solid var(--line)
 └─────────────────────────────────────────────────────┘  sticky, top: 0, z-index: 30+
 ```
 
-- **品牌区**：等宽字体，方块图标(14×14) + 文字，font-weight: 700
+- **品牌区**：等宽字体，SVG 闪电 logo(28×28) + 文字，font-weight: 700
 - **链接区**：font-size: 14px，color: var(--ink-soft)，hover → var(--ink)
 - **CTA按钮**：等宽字体，13px，边框按钮，hover 反色填充
 - **移动端**：< 760px 隐藏链接区，显示 ☰ 菜单按钮（手册页）
@@ -145,7 +156,7 @@
         grid: 1.05fr | 1fr    gap: clamp(40px, 6vw, 80px)
 ```
 
-- 标题中的关键词使用 `box-shadow: inset 0 -8px 0 var(--accent-soft)` 下划线高亮
+- 标题中的关键词使用 `color: var(--accent)` 文字颜色高亮
 - 双按钮布局：主按钮深色填充，次按钮边框风格
 - 移动端：< 1024px 单列堆叠
 
@@ -415,6 +426,7 @@ html { scroll-behavior: smooth; }
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{skill-name} · {一句话描述}</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,...">
   <link href="Google Fonts: Inter + JetBrains Mono" rel="stylesheet">
   <style>
     /* 1. 引入上述完整 CSS 变量系统 */
@@ -450,5 +462,4 @@ html { scroll-behavior: smooth; }
 ---
 
 *规范版本：v1.0*  
-*基于 build-and-deploy v1.0 页面设计提取*  
 *© 2026 imyuanwen@gmail.com*
