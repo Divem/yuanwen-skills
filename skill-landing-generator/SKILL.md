@@ -22,7 +22,7 @@ description: 为 Agent Skill 生成统一的落地页（landing）和手册页�
 - **名称**：skill 名称（用于文件命名和页面标题）
 - **一句话描述**：用于 hero 区域和 meta description
 - **前置条件**：需要安装的工具、权限、环境
-- **核心功能**：3-6 个特性点（图标 + 标题 + 描述）
+- **核心功能**：完整特性点（图标 + 标题 + 描述），不限制数量，尽可能详细覆盖全部功能
 - **工作流程**：完整工作流程（tag + 标题 + 描述），不限制步骤数量，尽可能详细覆盖全部子流程
 - **命令/用法**：主要命令及参数说明
 - **配置/状态标记**：配置项、状态标记、输出格式等
@@ -36,7 +36,7 @@ description: 为 Agent Skill 生成统一的落地页（landing）和手册页�
 Nav (sticky)
 ├── Hero（双栏：文案 + 终端模拟器）
 ├── 前置条件（双栏：说明 + 代码块）
-├── 核心功能（3×N 特性卡片网格）
+├── 核心功能（完整特性卡片网格，3 列 auto-fit）
 ├── 工作流程（完整步骤卡片，auto-fit 自适应网格）
 ├── 用法示例（全部用法卡片，auto-fit 自适应网格）
 ├── 状态/配置说明（可选，按需）
@@ -88,4 +88,4 @@ Topbar (sticky, blur backdrop)
 - [ ] `prefers-reduced-motion` 媒体查询已包含
 - [ ] 两页面互相链接正确
 - [ ] `<html lang="zh-CN">`，所有文案为中文
-- [ ] Footer 包含 `© 2026 imyuanwen@gmail.com`
+- [ ] Footer 格式正确：左侧 `© 2026 imyuanwen@gmail.com`，右侧包含「Skill 说明书生成器」GitHub 链接 + 「即刻主页」链接，使用 flex 两端对齐，`border-top` + `max-width: 1240px` 居中
