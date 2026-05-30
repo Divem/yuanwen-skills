@@ -276,6 +276,12 @@
 #### 阅读进度条
 - 固定顶部，高度 2px，蓝色，width 随滚动变化
 
+#### 表格滚动容器 (Table Scroll)
+- 类名：`.table-scroll`
+- 桌面端：无特殊效果，表格自然宽度
+- 移动端：`overflow-x: auto; -webkit-overflow-scrolling: touch;`，表格设 `min-width: 480px` 保证可读性
+- 所有手册页 `<table>` 必须包裹在 `<div class="table-scroll">` 中
+
 ---
 
 ## 6. 布局规范
@@ -321,7 +327,24 @@ Topbar (sticky, blur backdrop)
 | 760px | 落地页隐藏 nav-links；资源卡片 2 列 → 1 列 |
 | 680px | Usage 卡片自动换行 |
 | 640px | Hero 标题缩小 |
-| 540px | Flow 步骤自动换行；手册页底部导航双列 → 单列 |
+| 540px | Flow 步骤自动换行；手册页底部导航双列 → 单列；移动端专项优化（见下） |
+
+### 6.4 移动端专项优化（≤540px）
+
+**落地页：**
+- Section 垂直间距从 `clamp(70px, 11vw, 120px)` 降至 `48px`
+- Hero 区 padding 缩减至 `48px / 36px`
+- Terminal / Code block 内边距缩减至 `16px 18px`，字号降至 `12px`
+- Feature / Step / Usage 卡片内边距缩减
+- CTA 区 padding 降至 `48px`
+- Footer 改为 `flex-direction: column` 居中堆叠
+
+**手册页：**
+- `.main` 内边距降至 `32px 20px`
+- h2 间距从 `56px` 降至 `40px`
+- Page header margin 降至 `32px`
+- Code block 内边距缩减至 `16px 18px`，字号降至 `12px`
+- 所有表格通过 `.table-scroll` 容器横向滚动，`min-width: 480px`
 
 ---
 

@@ -152,6 +152,18 @@
     @media (max-width: 640px) {
       .hero h1 { font-size: clamp(32px, 9vw, 44px); }
     }
+    @media (max-width: 540px) {
+      .sec { padding: 48px 0; }
+      .hero { padding-top: 48px; padding-bottom: 36px; }
+      .sec-desc { margin-bottom: 32px; }
+      .terminal-body { padding: 16px 18px; font-size: 12px; }
+      .code-block pre { padding: 16px 18px; font-size: 12px; }
+      .feature { padding: 24px 20px; }
+      .step { padding: 24px 18px; }
+      .usage-body { padding: 16px; font-size: 12px; }
+      .cta-section { padding: 48px 0; }
+      footer { flex-direction: column; gap: 8px; text-align: center; }
+    }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .feature, .btn, .nav-cta { transition: none; }

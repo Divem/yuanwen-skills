@@ -93,6 +93,8 @@
     .tk-p { color: var(--ink); }
 
     /* ── Table ── */
+    .table-scroll { overflow-x: auto; margin: 20px 0; -webkit-overflow-scrolling: touch; }
+    .table-scroll table { min-width: 480px; }
     .main table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
     .main th { text-align: left; font-weight: 600; padding: 10px 14px; border-bottom: 2px solid var(--line); font-size: 13px; color: var(--ink-soft); }
     .main td { padding: 10px 14px; border-bottom: 1px solid var(--line-soft); }
@@ -142,6 +144,11 @@
     }
     @media (max-width: 540px) {
       .page-nav { grid-template-columns: 1fr; }
+      .main { padding: 32px 20px; }
+      .main h2 { margin-top: 40px; }
+      .page-header { margin-bottom: 32px; }
+      .manual-footer { margin-top: 40px; }
+      .code-block pre { padding: 16px 18px; font-size: 12px; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -228,6 +235,7 @@
     <section id="prerequisites">
       <h2>前置条件</h2>
       <p>使用 feishu-sync 前需确保以下条件满足：</p>
+      <div class="table-scroll">
       <table>
         <thead>
           <tr><th>条件</th><th>检查方式</th><th>修复方式</th></tr>
@@ -250,6 +258,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
       <div class="code-block">
         <div class="bar">验证前置条件</div>
         <pre><span class="tk-c"># 检查 lark-cli 状态</span>
@@ -288,6 +297,7 @@
         <pre><span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> init <span class="tk-k">--dir</span> <span class="tk-s">&lt;本地目录&gt;</span> <span class="tk-k">--folder</span> <span class="tk-s">&lt;飞书URL或token&gt;</span></pre>
       </div>
       <h3>参数说明</h3>
+      <div class="table-scroll">
       <table>
         <thead>
           <tr><th>参数</th><th>必填</th><th>默认值</th><th>说明</th></tr>
@@ -297,7 +307,9 @@
           <tr><td><code>--folder</code></td><td>是</td><td>—</td><td>飞书文件夹 URL 或纯 token</td></tr>
         </tbody>
       </table>
+      </div>
       <h3>执行流程</h3>
+      <div class="table-scroll">
       <table>
         <thead>
           <tr><th>步骤</th><th>操作</th></tr>
@@ -309,6 +321,7 @@
           <tr><td>4</td><td>生成 <code>.feishu-sync.json</code> 映射文件</td></tr>
         </tbody>
       </table>
+      </div>
       <div class="callout callout-tip">
         <div class="callout-icon">✓</div>
         <div><strong>建议：</strong>飞书侧使用空文件夹进行初始化，避免文件名冲突。<code>--folder</code> 支持完整 URL（<code>https://xxx.feishu.cn/drive/folder/TOKEN</code>）或纯 token。</div>
@@ -324,6 +337,7 @@
         <pre><span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> push <span class="tk-k">--dir</span> <span class="tk-s">&lt;本地目录&gt;</span></pre>
       </div>
       <h3>处理规则</h3>
+      <div class="table-scroll">
       <table>
         <thead>
           <tr><th>本地状态</th><th>操作</th></tr>
@@ -335,6 +349,7 @@
           <tr><td>本地已删除</td><td>列出提示，不自动删除飞书侧</td></tr>
         </tbody>
       </table>
+      </div>
       <div class="callout callout-warn">
         <div class="callout-icon">!</div>
         <div><strong>注意：</strong>本地删除的文件不会自动从飞书删除，仅提示。这是有意设计，防止误删飞书文档。</div>
@@ -350,6 +365,7 @@
         <pre><span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> pull <span class="tk-k">--dir</span> <span class="tk-s">&lt;本地目录&gt;</span></pre>
       </div>
       <h3>工作原理</h3>
+      <div class="table-scroll">
       <table>
         <thead>
           <tr><th>步骤</th><th>说明</th></tr>
@@ -360,6 +376,7 @@
           <tr><td>新文件检测</td><td>使用 <code>docs +search</code> 按时间过滤，检测飞书侧新建的文件</td></tr>
         </tbody>
       </table>
+      </div>
     </section>
 
     <!-- status -->
@@ -371,6 +388,7 @@
         <pre><span class="tk-cm">$</span> <span class="tk-k">/feishu-sync</span> status <span class="tk-k">--dir</span> <span class="tk-s">&lt;本地目录&gt;</span></pre>
       </div>
       <h3>标记说明</h3>
+      <div class="table-scroll">
       <table>
         <thead>
           <tr><th>标记</th><th>含义</th><th>建议操作</th></tr>
@@ -384,6 +402,7 @@
           <tr><td><code style="color:var(--ink-mute);">↓</code></td><td>飞书新增文件</td><td>执行 pull</td></tr>
         </tbody>
       </table>
+      </div>
       <div class="code-block">
         <div class="bar">输出示例</div>
         <pre><span class="tk-c"># 输出示例</span>
@@ -399,6 +418,7 @@
     <section id="file-handling">
       <h2>文件处理规则</h2>
       <p>feishu-sync 根据文件扩展名选择不同的同步策略：</p>
+      <div class="table-scroll">
       <table>
         <thead>
           <tr><th>文件类型</th><th>本地格式</th><th>飞书存储</th><th>创建方式</th><th>读取方式</th></tr>
@@ -420,6 +440,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
       <div class="callout callout-info">
         <div class="callout-icon">i</div>
         <div><strong>为什么 .md 走文档？</strong>飞书文档支持富文本在线编辑，团队成员可以直接在飞书修改内容，然后通过 pull 拉回本地。其他二进制文件（图片、PDF 等）走云盘上传下载。</div>
@@ -472,6 +493,7 @@
 }</pre>
       </div>
       <h3>字段说明</h3>
+      <div class="table-scroll">
       <table>
         <thead>
           <tr><th>字段</th><th>类型</th><th>说明</th></tr>
@@ -486,6 +508,7 @@
           <tr><td><code>files.*.feishu_modified</code></td><td>string</td><td>飞书最后修改时间</td></tr>
         </tbody>
       </table>
+      </div>
       <div class="callout callout-tip">
         <div class="callout-icon">✓</div>
         <div><strong>提示：</strong>将 <code>.feishu-sync.json</code> 加入 <code>.gitignore</code>，避免映射文件被提交到版本控制。</div>
@@ -495,6 +518,7 @@
     <!-- Limitations -->
     <section id="limitations">
       <h2>限制与注意事项</h2>
+      <div class="table-scroll">
       <table>
         <thead>
           <tr><th>限制</th><th>说明</th></tr>
@@ -507,6 +531,7 @@
           <tr><td>批量查询</td><td>每批最多 200 个文件元数据</td></tr>
         </tbody>
       </table>
+      </div>
     </section>
 
     <!-- Prev/Next Nav -->
