@@ -29,8 +29,8 @@
       --gutter: clamp(20px, 4vw, 72px);
       --radius: 10px;
     }
-    html { scroll-behavior: smooth; }
-    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100vw; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
     /* ── Nav ── */
     .nav { position: sticky; top: 0; z-index: 40; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gutter); background: var(--bg); border-bottom: 1px solid var(--line); }
@@ -49,7 +49,7 @@
 
     /* ── Hero ── */
     .hero { padding-top: clamp(70px, 12vw, 130px); padding-bottom: clamp(50px, 8vw, 100px); }
-    .hero .grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(40px, 6vw, 80px); align-items: center; max-width: 1160px; margin: 0 auto; }
+    .hero .grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(40px, 6vw, 80px); align-items: center; max-width: 1240px; margin: 0 auto; }
     .badge { display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 600; padding: 4px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg-soft); color: var(--accent); letter-spacing: 0.04em; margin-bottom: 20px; }
     .hero h1 { font-size: clamp(36px, 4.6vw, 64px); font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; margin-bottom: 20px; }
     .hero h1 .hero-sub { font-size: 0.5em; font-weight: 600; color: var(--ink-soft); letter-spacing: 0.02em; display: inline-block; margin-bottom: 6px; }
@@ -79,7 +79,7 @@
     .mute { color: var(--ink-mute); }
 
     /* ── Section ── */
-    .sec { padding: clamp(70px, 11vw, 120px) 0; }
+    .sec { padding-top: clamp(70px, 11vw, 120px); padding-bottom: clamp(70px, 11vw, 120px); }
     .sec + .sec { border-top: 1px solid var(--line); }
     .sec-title { font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
     .sec-desc { font-size: clamp(15px, 1.3vw, 17px); color: var(--ink-soft); max-width: 640px; line-height: 1.65; margin-bottom: 48px; }
@@ -93,7 +93,7 @@
     .code-block .bar { display: flex; align-items: center; height: 36px; padding: 0 16px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 11px; color: var(--ink-mute); background: var(--bg); }
 
     /* ── Features Grid ── */
-    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; min-width: 0; }
     .feature { padding: 32px 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background 140ms; }
     .feature:nth-child(3n) { border-right: none; }
     .feature:nth-last-child(-n+3) { border-bottom: none; }
@@ -123,7 +123,7 @@
     .usage-body .comment { color: var(--ink-mute); font-style: italic; }
 
     /* ── CTA ── */
-    .cta-section { text-align: center; padding: clamp(70px, 11vw, 120px) 0; border-top: 1px solid var(--line); }
+    .cta-section { text-align: center; padding-top: clamp(70px, 11vw, 120px); padding-bottom: clamp(70px, 11vw, 120px); border-top: 1px solid var(--line); }
     .cta-section h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; }
     .cta-section p { font-size: clamp(15px, 1.3vw, 17px); color: var(--ink-soft); margin-bottom: 32px; }
 
@@ -153,7 +153,7 @@
       .hero h1 { font-size: clamp(32px, 9vw, 44px); }
     }
     @media (max-width: 540px) {
-      .sec { padding: 48px 0; }
+      .sec { padding-top: 48px; padding-bottom: 48px; }
       .hero { padding-top: 48px; padding-bottom: 36px; }
       .sec-desc { margin-bottom: 32px; }
       .terminal-body { padding: 16px 18px; font-size: 12px; }
@@ -161,7 +161,7 @@
       .feature { padding: 24px 20px; }
       .step { padding: 24px 18px; }
       .usage-body { padding: 16px; font-size: 12px; }
-      .cta-section { padding: 48px 0; }
+      .cta-section { padding-top: 48px; padding-bottom: 48px; }
       footer { flex-direction: column; gap: 8px; text-align: center; }
     }
     @media (prefers-reduced-motion: reduce) {
