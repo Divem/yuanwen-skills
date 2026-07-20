@@ -35,6 +35,7 @@ Claude Code 自定义 Skills 合集，用于提升工作效率和自动化任务
 | [skill-backup](skill-backup/) | 备份、同步和恢复自定义 Skills | 🇨🇳 中文 |
 | [skill-landing-generator](skill-landing-generator/) | 为 Skill 生成统一风格的落地页和手册页 HTML | 🇨🇳 中文 |
 | [docs-organizer](docs-organizer/) | 文档目录管理（初始化 / 诊断审计） | 🇨🇳 中文 |
+| [changelog-generator](changelog-generator/) | 从 AI 编码工具日志生成多风格更新日志（changelog） | 🇨🇳 中文 |
 
 ## 🚀 快速开始
 
@@ -109,7 +110,12 @@ yuanwen-skills/
 ├── skill-backup/               # Skills 备份工具
 │   ├── SKILL.md
 │   └── README.md
-└── skill-landing-generator/    # Skill 落地页生成器
+├── skill-landing-generator/    # Skill 落地页生成器
+│   ├── SKILL.md
+│   ├── README.md
+│   ├── assets/
+│   └── references/
+└── changelog-generator/        # 多风格更新日志生成器
     ├── SKILL.md
     ├── README.md
     ├── assets/
