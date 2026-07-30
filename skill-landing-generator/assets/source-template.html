@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="feishu-sync 的 SKILL.md 完整源文档。">
+  <title>feishu-sync · SKILL.md</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='28' height='28' viewBox='0 0 28 28' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='28' height='28' rx='7' fill='%232563eb'/%3E%3Cpath d='M16.5 4L9 15h4.5L11.5 24 20 12h-5z' fill='%23fff' stroke='%23fff' stroke-width='0.5' stroke-linejoin='round'/%3E%3Ccircle cx='8.5' cy='6.5' r='1.2' fill='%23fff' opacity='.6'/%3E%3Ccircle cx='20.5' cy='22' r='1' fill='%23fff' opacity='.4'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #ffffff;
+      --bg-soft: #f7f7f5;
+      --paper: #ffffff;
+      --ink: #111111;
+      --ink-soft: #555555;
+      --ink-mute: #8a8a87;
+      --line: #e6e6e3;
+      --line-soft: #ededea;
+      --accent: #2563eb;
+      --accent-soft: #eaf0ff;
+      --hl-string: #059669;
+      --hl-number: #d97706;
+      --hl-comment: #8a8a87;
+      --sans: "Inter", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --gutter: clamp(20px, 4vw, 72px);
+      --radius: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); color: var(--ink); background: var(--bg); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    button { font: inherit; }
+    code, pre { font-family: var(--mono); }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 40; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--gutter); background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-weight: 700; font-size: 15px;
+      text-decoration: none; color: var(--ink);
+    }
+    .logo { width: 28px; height: 28px; flex-shrink: 0; }
+    .logo svg { display: block; }
+    .topbar-links { display: flex; align-items: center; gap: 20px; }
+    .topbar-links a {
+      font-size: 14px; color: var(--ink-soft); text-decoration: none;
+      transition: color 140ms, background 140ms, border-color 140ms;
+    }
+    .topbar-links a:hover { color: var(--ink); }
+    .topbar-links .current {
+      padding: 6px 12px; border: 1px solid var(--line);
+      border-radius: 6px; color: var(--accent); background: var(--accent-soft);
+      font-family: var(--mono); font-size: 12px; font-weight: 600;
+    }
+
+    .source-shell { width: min(980px, calc(100% - 2 * var(--gutter))); margin: 0 auto; }
+    .source-header { padding: clamp(56px, 9vw, 96px) 0 36px; border-bottom: 1px solid var(--line); }
+    .eyebrow {
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; color: var(--accent); margin-bottom: 12px;
+    }
+    .source-header h1 {
+      font-size: clamp(32px, 5vw, 52px); line-height: 1.12;
+      letter-spacing: -0.02em; margin-bottom: 16px;
+    }
+    .source-header p { max-width: 680px; color: var(--ink-soft); font-size: clamp(15px, 1.5vw, 18px); }
+    .source-meta {
+      display: flex; flex-wrap: wrap; gap: 18px; margin-top: 18px;
+      color: var(--ink-mute); font-family: var(--mono); font-size: 12px;
+    }
+
+    .source-toolbar {
+      position: sticky; top: 60px; z-index: 30;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; padding: 14px 0; background: var(--paper);
+      border-bottom: 1px solid var(--line);
+    }
+    .view-switch { display: flex; align-items: center; gap: 8px; }
+    .view-btn, .copy-btn {
+      padding: 7px 14px; border: 1px solid var(--line); border-radius: 6px;
+      background: var(--paper); color: var(--ink-soft); cursor: pointer;
+      font-family: var(--mono); font-size: 12px;
+      transition: color 140ms, background 140ms, border-color 140ms;
+    }
+    .view-btn:hover, .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+    .view-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+
+    .markdown-body { padding: 44px 0 72px; font-size: 16px; }
+    .markdown-body > :first-child { margin-top: 0; }
+    .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
+      scroll-margin-top: 132px; letter-spacing: -0.02em; line-height: 1.3;
+    }
+    .markdown-body h1 { font-size: 34px; margin: 48px 0 18px; }
+    .markdown-body h2 { font-size: 26px; margin: 44px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+    .markdown-body h3 { font-size: 20px; margin: 32px 0 12px; }
+    .markdown-body h4 { font-size: 17px; margin: 24px 0 10px; }
+    .markdown-body p { margin: 0 0 16px; }
+    .markdown-body ul, .markdown-body ol { margin: 0 0 18px 24px; }
+    .markdown-body li { margin: 6px 0; }
+    .markdown-body a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .markdown-body blockquote {
+      margin: 20px 0; padding: 14px 18px; border-left: 3px solid var(--accent);
+      background: var(--accent-soft); color: var(--ink-soft);
+    }
+    .markdown-body code {
+      padding: 2px 6px; border-radius: 4px; background: var(--bg-soft);
+      color: var(--ink); font-size: 0.88em;
+    }
+    .markdown-body pre {
+      margin: 20px 0; padding: 20px 24px; overflow-x: auto;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: var(--bg-soft); font-size: 13px; line-height: 1.8;
+    }
+    .markdown-body pre code { padding: 0; background: transparent; font-size: inherit; }
+    .markdown-body .frontmatter {
+      margin-bottom: 36px; padding: 20px 24px; border: 1px solid var(--line);
+      border-radius: var(--radius); background: var(--bg-soft);
+    }
+    .markdown-body .frontmatter-title {
+      margin-bottom: 12px; color: var(--ink-mute);
+      font-family: var(--mono); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .markdown-body .frontmatter dl { display: grid; grid-template-columns: 110px 1fr; gap: 10px 18px; }
+    .markdown-body .frontmatter dt { color: var(--accent); font-family: var(--mono); font-size: 13px; font-weight: 600; }
+    .markdown-body .frontmatter dd { min-width: 0; color: var(--ink-soft); }
+    .table-scroll { margin: 20px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .markdown-body table { width: 100%; min-width: 520px; border-collapse: collapse; font-size: 14px; }
+    .markdown-body th, .markdown-body td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--line); }
+    .markdown-body th { color: var(--ink-soft); font-weight: 600; }
+
+    .raw-source {
+      margin: 36px 0 72px; padding: 24px 28px; overflow: auto;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: var(--bg-soft); color: var(--ink);
+      font-size: 13px; line-height: 1.8; white-space: pre;
+    }
+    [hidden] { display: none !important; }
+
+    footer {
+      border-top: 1px solid var(--line); padding: 28px 0;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; color: var(--ink-mute);
+    }
+    footer a { color: var(--ink-soft); text-decoration: none; }
+    footer a:hover { color: var(--ink); }
+
+    @media (max-width: 760px) {
+      .topbar-links { gap: 12px; }
+      .topbar-links a:not(.current) { font-size: 13px; }
+      .source-toolbar { align-items: flex-start; }
+    }
+    @media (max-width: 540px) {
+      .topbar-brand { font-size: 0; gap: 0; }
+      .topbar-links { gap: 8px; }
+      .topbar-links .current { padding: 5px 8px; }
+      .source-header { padding-top: 44px; }
+      .source-toolbar { position: static; flex-direction: column; }
+      .markdown-body { padding-top: 32px; font-size: 15px; }
+      .markdown-body h1 { font-size: 28px; }
+      .markdown-body h2 { font-size: 23px; }
+      .markdown-body pre, .raw-source { padding: 16px 18px; font-size: 12px; }
+      .markdown-body .frontmatter dl { grid-template-columns: 1fr; gap: 4px; }
+      .markdown-body .frontmatter dd { margin-bottom: 10px; }
+      footer { flex-direction: column; gap: 8px; text-align: center; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .topbar-links a, .view-btn, .copy-btn { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <span class="logo"><svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="28" height="28" rx="7" fill="#2563eb"/>
+        <path d="M16.5 4L9 15h4.5L11.5 24 20 12h-5z" fill="#fff" stroke="#fff" stroke-width="0.5" stroke-linejoin="round"/>
+        <circle cx="8.5" cy="6.5" r="1.2" fill="#fff" opacity=".6"/>
+        <circle cx="20.5" cy="22" r="1" fill="#fff" opacity=".4"/>
+      </svg></span>
+      feishu-sync
+    </a>
+    <div class="topbar-links">
+      <a href="landing-template.html">落地页</a>
+      <a href="manual-template.html">使用手册</a>
+      <a href="source-template.html" class="current" aria-current="page">SKILL.md</a>
+    </div>
+  </nav>
+
+  <main class="source-shell">
+    <header class="source-header">
+      <div class="eyebrow">SOURCE DOCUMENT</div>
+      <h1>SKILL.md</h1>
+      <p>这里展示 feishu-sync 的完整 Skill 定义。内容在页面生成时直接读取并嵌入，可查看渲染结果或未经改写的原文。</p>
+      <div class="source-meta">
+        <span>feishu-sync</span>
+        <span>完整原文</span>
+        <span>静态单文件</span>
+      </div>
+    </header>
+
+    <div class="source-toolbar">
+      <div class="view-switch" role="group" aria-label="文档视图">
+        <button class="view-btn active" type="button" data-view="rendered" aria-pressed="true">渲染结果</button>
+        <button class="view-btn" type="button" data-view="raw" aria-pressed="false">原文</button>
+      </div>
+      <button class="copy-btn" id="copySource" type="button">复制原文</button>
+    </div>
+
+    <!-- 生成时用目标 SKILL.md 的语义化 HTML 完整替换此示例。 -->
+    <article class="markdown-body" id="renderedSource">
+      <div class="frontmatter">
+        <div class="frontmatter-title">YAML frontmatter</div>
+        <dl>
+          <dt>name</dt>
+          <dd>feishu-sync</dd>
+          <dt>description</dt>
+          <dd>在本地 Markdown 目录与飞书云文档之间进行双向同步。</dd>
+        </dl>
+      </div>
+      <h1>Feishu Sync</h1>
+      <p>在本地目录与飞书云文档之间建立映射，并执行增量双向同步。</p>
+      <h2>使用方式</h2>
+      <ul>
+        <li><code>init</code>：初始化映射并上传本地文件。</li>
+        <li><code>push</code>：推送本地变更。</li>
+        <li><code>pull</code>：拉取飞书变更。</li>
+        <li><code>status</code>：检查两端状态与冲突。</li>
+      </ul>
+      <h2>示例</h2>
+      <pre><code>/feishu-sync push --dir docs</code></pre>
+    </article>
+
+    <!-- 生成时用经过 HTML 转义的目标 SKILL.md 完整原文替换此示例。 -->
+    <pre class="raw-source" id="rawSource" hidden><code>---
+name: feishu-sync
+description: 在本地 Markdown 目录与飞书云文档之间进行双向同步。
+---
+
+# Feishu Sync
+
+在本地目录与飞书云文档之间建立映射，并执行增量双向同步。
+
+## 使用方式
+
+- `init`：初始化映射并上传本地文件。
+- `push`：推送本地变更。
+- `pull`：拉取飞书变更。
+- `status`：检查两端状态与冲突。
+
+## 示例
+
+```bash
+/feishu-sync push --dir docs
+```</code></pre>
+
+    <footer>
+      <span>&copy; 2026 imyuanwen@gmail.com</span>
+      <span><a href="https://github.com/Divem/yuanwen-skills/tree/main/skill-landing-generator" target="_blank">Skill 说明书生成器</a> / <a href="https://okjk.co/aMLfdX" target="_blank">即刻主页</a></span>
+    </footer>
+  </main>
+
+  <script>
+    (function() {
+      var buttons = document.querySelectorAll('[data-view]');
+      var rendered = document.getElementById('renderedSource');
+      var raw = document.getElementById('rawSource');
+      var copy = document.getElementById('copySource');
+
+      buttons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          var showRaw = button.getAttribute('data-view') === 'raw';
+          rendered.hidden = showRaw;
+          raw.hidden = !showRaw;
+          buttons.forEach(function(item) {
+            var active = item === button;
+            item.classList.toggle('active', active);
+            item.setAttribute('aria-pressed', String(active));
+          });
+        });
+      });
+
+      copy.addEventListener('click', function() {
+        var sourceText = raw.textContent;
+        function showCopied() {
+          copy.textContent = '已复制';
+          window.setTimeout(function() { copy.textContent = '复制原文'; }, 1600);
+        }
+        function fallbackCopy() {
+          var textarea = document.createElement('textarea');
+          textarea.value = sourceText;
+          textarea.setAttribute('readonly', '');
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          var copied = document.execCommand('copy');
+          textarea.remove();
+          if (copied) showCopied();
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(sourceText).then(showCopied).catch(fallbackCopy);
+        } else {
+          fallbackCopy();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

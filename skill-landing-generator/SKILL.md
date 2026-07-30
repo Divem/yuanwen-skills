@@ -1,11 +1,11 @@
 ---
 name: skill-landing-generator
-description: 为 Agent Skill 生成统一的落地页（landing）和手册页（manual）HTML。基于统一设计规范，确保所有 Skill 介绍页面视觉语言一致。触发场景：(1) 用户要求为某个 skill 生成 landing/介绍页面；(2) 用户要求为某个 skill 生成 manual/手册/文档页面；(3) 用户要求生成 skill 介绍页、文档页。输入：skill 名称 + skill 文档内容。输出：两个 HTML 文件。
+description: 为 Agent Skill 生成统一的落地页（landing）、手册页（manual）和 SKILL.md 源文档页（source）HTML。基于统一设计规范，确保所有 Skill 介绍页面视觉语言一致。触发场景：(1) 用户要求为某个 skill 生成 landing/介绍页面；(2) 用户要求为某个 skill 生成 manual/手册/文档页面；(3) 用户要求展示或渲染 SKILL.md 原文；(4) 用户要求生成 skill 介绍页、文档页或源码页。输入：skill 名称 + skill 文档内容。输出：三个互相链接的 HTML 文件。
 ---
 
 # Skill Landing Generator
 
-为任意 Agent Skill 生成一对统一风格的 HTML 页面：**落地页** + **手册页**。
+为任意 Agent Skill 生成一组统一风格的 HTML 页面：**落地页** + **手册页** + **SKILL.md 源文档页**。
 
 ## 设计规范
 
@@ -30,7 +30,7 @@ description: 为 Agent Skill 生成统一的落地页（landing）和手册页�
 
 ### 2. 生成落地页
 
-参考 `assets/landing-template.html` 的结构。核心区块：
+参考 `assets/landing-template.html` 的结构。顶部导航必须同时包含手册页和 `SKILL.md` 源文档页入口。核心区块：
 
 ```
 Nav (sticky)
@@ -48,7 +48,7 @@ Nav (sticky)
 
 ### 3. 生成手册页
 
-参考 `assets/manual-template.html` 的结构。核心区块：
+参考 `assets/manual-template.html` 的结构。顶部栏必须同时包含落地页和 `SKILL.md` 源文档页入口。核心区块：
 
 ```
 Topbar (sticky, blur backdrop)
@@ -67,11 +67,32 @@ Topbar (sticky, blur backdrop)
 
 文件命名：`{skill-name}-manual.html`
 
-### 4. 互相链接
+### 4. 生成 SKILL.md 源文档页
 
-- 落地页 nav 中链接到手册页
-- 手册页 topbar 中链接回落地页
-- 落地页和手册页文件放在同一目录
+参考 `assets/source-template.html` 的结构。
+
+1. 读取目标 Skill 的 `SKILL.md` 完整原文，包括 YAML frontmatter。
+2. 在生成阶段把 Markdown 转换为语义化 HTML，写入 Source 页正文；不要在浏览器运行时通过 `fetch()` 请求本地 Markdown。
+3. 同时把经过 HTML 转义的完整原文写入“原文”视图，确保读者可以在“渲染结果 / 原文”之间切换。
+4. 保留原文顺序、标题层级、列表、表格、引用、代码块、链接和行内代码；不得省略、改写或补写源文档内容。
+5. Source 页底部必须包含统一品牌页脚。
+
+文件命名：`{skill-name}-source.html`，页面入口文案统一使用 `SKILL.md`，索引卡片入口文案统一使用 `Source`。
+
+### 5. 互相链接
+
+- 落地页 nav 中链接到手册页和 Source 页
+- 手册页 topbar 中链接回落地页和 Source 页
+- Source 页 topbar 中链接回落地页和手册页
+- 三个页面放在同一目录，全部使用相对路径
+
+### 6. 更新索引卡片
+
+如果输出目录中存在 `index.html`，并且索引卡片由 Skill 数据生成：
+
+- 为当前 Skill 的数据项设置 `source: true`
+- 在卡片链接区按 `source` 字段条件渲染 `<a href="{skill-name}-source.html">Source</a>`
+- 不要为尚未生成 Source 页的旧 Skill 显示入口，避免产生 404 链接
 
 ## 一致性检查清单
 
@@ -85,7 +106,10 @@ Topbar (sticky, blur backdrop)
 - [ ] 代码高亮类名使用 `.prompt` `.cmd` `.arg` `.str` `.ok` `.info` `.warn` `.mute`（落地页）和 `.tk-c` `.tk-k` `.tk-s` `.tk-n` `.tk-cm` `.tk-p`（手册页）
 - [ ] 响应式断点覆盖：1024px / 980px / 880px / 760px / 680px / 640px / 540px
 - [ ] 手册页包含 ScrollSpy + 进度条 + 移动端 ☰ 菜单 JS
+- [ ] Source 页完整包含 SKILL.md 的渲染结果和经过转义的原文，内容无删改
+- [ ] Source 页不使用 `fetch()` 读取 Markdown，可直接作为静态单文件部署
 - [ ] `prefers-reduced-motion` 媒体查询已包含
-- [ ] 两页面互相链接正确
+- [ ] 三个页面互相链接正确，顶部入口文案为 `SKILL.md`
+- [ ] 有 Source 页的索引卡片显示 `Source`，无 Source 页的卡片不显示
 - [ ] `<html lang="zh-CN">`，所有文案为中文
-- [ ] Footer 格式正确：左侧 `© 2026 imyuanwen@gmail.com`，右侧包含「Skill 说明书生成器」GitHub 链接 + 「即刻主页」链接，使用 flex 两端对齐，`border-top` + `max-width: 1240px` 居中
+- [ ] 三个页面的 Footer 格式正确：左侧 `© 2026 imyuanwen@gmail.com`，右侧包含「Skill 说明书生成器」GitHub 链接 + 「即刻主页」链接，使用 flex 两端对齐，`border-top` + `max-width: 1240px` 居中

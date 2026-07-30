@@ -1,6 +1,6 @@
 # build-and-deploy Skill 介绍页设计规范
 
-> 本规范源自 `landing-template.html`（落地页）与 `manual-template.html`（用户手册）的联合设计系统，用于统一 Skill 介绍类页面的视觉语言。
+> 本规范源自 `landing-template.html`（落地页）、`manual-template.html`（用户手册）与 `source-template.html`（SKILL.md 源文档页）的联合设计系统，用于统一 Skill 介绍类页面的视觉语言。
 
 ---
 
@@ -282,6 +282,16 @@
 - 移动端：`overflow-x: auto; -webkit-overflow-scrolling: touch;`，表格设 `min-width: 480px` 保证可读性
 - 所有手册页 `<table>` 必须包裹在 `<div class="table-scroll">` 中
 
+### 5.11 SKILL.md 源文档页专用组件
+
+- 顶部栏包含返回落地页、手册页两个入口，当前页面名称显示为 `SKILL.md`
+- 主内容区最大宽度 980px，使用 `.source-shell` 和 `.markdown-body`
+- 提供“渲染结果 / 原文”两个切换按钮，默认显示渲染结果
+- 渲染结果使用语义化 HTML；原文使用 `<pre><code>` 并对完整 `SKILL.md` 做 HTML 转义
+- 内容在生成阶段直接嵌入 HTML，禁止通过 `fetch()` 在运行时读取 Markdown
+- Markdown 标题、列表、表格、引用、链接、行内代码和代码块均需有对应样式
+- 页面底部使用与 landing/manual 一致的品牌页脚
+
 ---
 
 ## 6. 布局规范
@@ -316,7 +326,22 @@ Topbar (sticky, blur backdrop)
 └── TOC (220px, 滚动追踪)
 ```
 
-### 6.3 响应式断点
+### 6.3 SKILL.md 源文档页结构
+
+```
+Topbar (sticky)
+├── Brand
+├── Landing / Manual 导航
+└── 当前页标记 SKILL.md
+Main (max-width 980px)
+├── Page Header
+├── 渲染结果 / 原文切换
+├── Rendered Markdown
+├── Escaped Raw Markdown
+└── Brand Footer
+```
+
+### 6.4 响应式断点
 
 | 断点 | 变化 |
 |------|------|
@@ -329,7 +354,7 @@ Topbar (sticky, blur backdrop)
 | 640px | Hero 标题缩小 |
 | 540px | Flow 步骤自动换行；手册页底部导航双列 → 单列；移动端专项优化（见下） |
 
-### 6.4 移动端专项优化（≤540px）
+### 6.5 移动端专项优化（≤540px）
 
 **落地页：**
 - Section 垂直间距从 `clamp(70px, 11vw, 120px)` 降至 `48px`
@@ -435,6 +460,7 @@ html { scroll-behavior: smooth; }
 |------|------|
 | `*-landing.html` | 落地介绍页 |
 | `*-manual.html` | 用户手册页 |
+| `*-source.html` | SKILL.md 源文档页 |
 
 ---
 
@@ -482,7 +508,20 @@ html { scroll-behavior: smooth; }
 </script>
 ```
 
+### 10.3 最小 SKILL.md 源文档页结构
+
+```html
+<nav class="topbar">...</nav>
+<main class="source-shell">
+  <header class="source-header">...</header>
+  <div class="view-switch">...</div>
+  <article id="renderedSource" class="markdown-body">...</article>
+  <pre id="rawSource" class="raw-source" hidden><code>...</code></pre>
+  <footer>...</footer>
+</main>
+```
+
 ---
 
-*规范版本：v1.0*  
+*规范版本：v1.1*
 *© 2026 imyuanwen@gmail.com*
