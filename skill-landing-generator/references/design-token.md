@@ -106,7 +106,6 @@
 --gutter: clamp(20px, 4vw, 72px);   /* 页面水平边距 */
 --radius: 10px;                      /* 统一圆角 */
 --sidebar: 260px;                    /* 手册页侧边栏宽度 */
---toc: 220px;                        /* 手册页目录宽度 */
 ```
 
 ### 4.2 区块间距
@@ -121,7 +120,7 @@
 ### 4.3 容器规则
 
 - **落地页**：`.frame` 全宽 + `padding: 0 var(--gutter)`；`.narrow` 最大 980px 居中
-- **手册页**：三栏布局 `260px | 1fr | 220px`，主内容区 `max-width: 1100px`
+- **手册页**：两栏布局 `260px | 1fr`，主内容区 `max-width: 1100px` 居中
 
 ---
 
@@ -269,10 +268,6 @@
 - 分组标题：等宽 11px，大写，letter-spacing: 0.14em
 - 链接：14px，左边框 2px 透明，active → 蓝底+左边框
 
-#### 目录 (TOC)
-- 宽度：220px，sticky，自动生成自 h2/h3
-- 当前项：左边框变蓝，文字变蓝+粗体
-
 #### 阅读进度条
 - 固定顶部，高度 2px，蓝色，width 随滚动变化
 
@@ -318,12 +313,11 @@ Nav (sticky)
 ```
 Topbar (sticky, blur backdrop)
 ├── Sidebar (260px, 滚动追踪)
-├── Main (1fr, max-width 1100px)
-│   ├── Page Header (eyebrow + h1 + lede + meta)
-│   ├── h2/h3 内容区块
-│   ├── Tables / Code blocks / Callouts
-│   └── Prev/Next 导航 + Footer
-└── TOC (220px, 滚动追踪)
+└── Main (1fr, max-width 1100px, 居中)
+    ├── Page Header (eyebrow + h1 + lede + meta)
+    ├── h2/h3 内容区块
+    ├── Tables / Code blocks / Callouts
+    └── Prev/Next 导航 + Footer
 ```
 
 ### 6.3 SKILL.md 源文档页结构
@@ -345,7 +339,6 @@ Main (max-width 980px)
 
 | 断点 | 变化 |
 |------|------|
-| 1180px | 手册页隐藏右侧 TOC |
 | 1024px | Hero 双栏 → 单栏 |
 | 980px | 特性网格 3 列 → 2 列；手册页 Policy 3 列 → 1 列 |
 | 880px | 手册页隐藏 Sidebar，显示 ☰ 菜单；Keynote/Config 双栏 → 单栏 |
@@ -396,9 +389,9 @@ html { scroll-behavior: smooth; }
 
 ### 7.3 ScrollSpy（手册页）
 
-- 监听 h2/h3 进入视口
+- 监听 `main section[id]` 进入视口
 - offset: 120px
-- 同步高亮 Sidebar + TOC
+- 同步高亮 Sidebar 当前章节
 - 进度条：`width = scrollTop / (scrollHeight - clientHeight) * 100%`
 
 ### 7.4 无障碍
@@ -501,10 +494,9 @@ html { scroll-behavior: smooth; }
 <div class="layout">
   <aside class="sidebar">...</aside>
   <main id="content">...</main>
-  <aside class="toc">...</aside>
 </div>
 <script>
-  // Mobile menu + TOC generation + ScrollSpy
+  // Mobile menu + ScrollSpy（基于 section[id]）
 </script>
 ```
 

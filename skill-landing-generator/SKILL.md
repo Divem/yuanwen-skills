@@ -52,17 +52,16 @@ Nav (sticky)
 
 ```
 Topbar (sticky, blur backdrop)
-├── Sidebar（260px，分组导航）
-├── Main（1fr，max-width 1100px）
-│   ├── Page Header（eyebrow + h1 + lede + meta）
-│   ├── 概述
-│   ├── 前置条件
-│   ├── 快速开始
-│   ├── 各命令详解（h2，含参数表、流程表）
-│   ├── 进阶主题（文件处理、冲突、映射文件等）
-│   ├── 限制与注意
-│   ├── Prev/Next 导航 + Footer
-└── TOC（220px，JS 自动生成，ScrollSpy 联动）
+├── Sidebar（260px，分组导航，ScrollSpy 高亮当前章节）
+└── Main（1fr，max-width 1100px，居中）
+    ├── Page Header（eyebrow + h1 + lede + meta）
+    ├── 概述
+    ├── 前置条件
+    ├── 快速开始
+    ├── 各命令详解（h2，含参数表、流程表）
+    ├── 进阶主题（文件处理、冲突、映射文件等）
+    ├── 限制与注意
+    └── Prev/Next 导航 + Footer
 ```
 
 文件命名：`{skill-name}-manual.html`
