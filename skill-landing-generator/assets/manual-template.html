@@ -70,7 +70,9 @@
     .eyebrow { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
     .page-header h1 { font-size: clamp(28px, 4vw, 44px); font-weight: 700; margin-bottom: 12px; }
     .page-lede { font-size: clamp(16px, 1.5vw, 19px); color: var(--ink-soft); line-height: 1.65; }
-    .page-meta { display: flex; gap: 20px; margin-top: 16px; font-family: var(--mono); font-size: 12px; color: var(--ink-mute); }
+    .page-meta { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 16px; font-family: var(--mono); font-size: 12px; color: var(--ink-mute); }
+    .page-meta a { color: var(--ink-soft); text-decoration: none; transition: color 140ms; }
+    .page-meta a:hover { color: var(--accent); }
 
     /* Headings */
     .main h2 { font-size: clamp(22px, 3vw, 30px); font-weight: 700; margin-top: 56px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
@@ -208,6 +210,10 @@
       <div class="page-meta">
         <span>版本 1.0</span>
         <span>更新于 2026-05</span>
+        <!-- 作者：SKILL.md frontmatter 有 author 字段时显示，无则省略 -->
+        <span>作者 wen.yuan</span>
+        <!-- 来源链接：有远程来源链接（GitHub / SkillHub 等）时显示，新标签页打开；无则省略 -->
+        <a href="https://github.com/Divem/yuanwen-skills/tree/main/feishu-sync" target="_blank" rel="noopener">GitHub 来源</a>
       </div>
     </div>
 

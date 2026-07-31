@@ -52,7 +52,11 @@ Nav (sticky)
 
 ### 3. 生成手册页
 
-参考 `assets/manual-template.html` 的结构。顶部栏必须同时包含落地页和 `SKILL.md` 源文档页入口。核心区块：
+参考 `assets/manual-template.html` 的结构。顶部栏必须同时包含落地页和 `SKILL.md` 源文档页入口。
+
+**Page Meta 规则**：页头 meta 行除版本/更新日期外——SKILL.md frontmatter 有 `author` 字段时显示作者信息，无则省略；有远程来源链接（GitHub / SkillHub 等）时显示来源链接（新标签页打开，链接文案如 `GitHub 来源` / `SkillHub 来源`），无则省略。
+
+核心区块：
 
 ```
 Topbar (sticky, blur backdrop)
