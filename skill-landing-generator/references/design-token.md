@@ -144,7 +144,7 @@
 
 ```
 ┌────────────────────────┬────────────────────────────┐
-│ badge                  │                            │
+│ repo-badge（GitHub 地址）│                            │
 │ 一句中文，             │   ┌────────────────────┐   │
 │ 把前端发到远程服务器   │   │  terminal          │   │
 │                        │   │  $ /build-and-...  │   │
@@ -158,6 +158,13 @@
 - 标题中的关键词使用 `color: var(--accent)` 文字颜色高亮
 - 双按钮布局：主按钮深色填充，次按钮边框风格
 - 移动端：< 1024px 单列堆叠
+
+**Repo Badge（Hero 顶部地址徽章）**
+- 仅当 skill 有 GitHub 地址时显示；无地址则不渲染
+- 结构：`[GitHub icon + 地址（可点击跳转） | 复制按钮]`，单一边框容器（`border: 1px solid var(--line)`，radius 6px，`background: var(--bg-soft)`）
+- 地址文本：等宽 12px，去除 `https://` 前缀展示，超长省略号截断
+- 复制按钮：左边框分隔，点击复制完整 URL，成功显示 ✓（绿色）1.5s 后还原
+- hover：文字/图标变 `var(--accent)`，底色 `var(--accent-soft)`
 
 ### 5.3 终端模拟器 (Terminal)
 

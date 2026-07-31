@@ -30,7 +30,11 @@ description: 为 Agent Skill 生成统一的落地页（landing）、手册页�
 
 ### 2. 生成落地页
 
-参考 `assets/landing-template.html` 的结构。顶部导航必须同时包含手册页和 `SKILL.md` 源文档页入口。核心区块：
+参考 `assets/landing-template.html` 的结构。顶部导航必须同时包含手册页和 `SKILL.md` 源文档页入口。
+
+**Hero 徽章规则**：如果 skill 有 GitHub 地址，Hero 顶部显示 GitHub 地址徽章（`.repo-badge`，等宽字体展示地址，左侧点击跳转 GitHub，右侧按钮一键复制地址，复制成功显示 ✓ 反馈）；如果没有 GitHub 地址，则完全不显示徽章。
+
+核心区块：
 
 ```
 Nav (sticky)
