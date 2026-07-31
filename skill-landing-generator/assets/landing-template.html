@@ -51,7 +51,7 @@
     .hero { padding-top: clamp(70px, 12vw, 130px); padding-bottom: clamp(50px, 8vw, 100px); }
     .hero .grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(40px, 6vw, 80px); align-items: center; max-width: 1240px; margin: 0 auto; }
     .badge { display: inline-block; font-family: var(--mono); font-size: 11px; font-weight: 600; padding: 4px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg-soft); color: var(--accent); letter-spacing: 0.04em; margin-bottom: 20px; }
-    /* Repo Badge：有 GitHub 地址时替代 badge 显示，支持跳转 + 复制 */
+    /* Repo Badge：有远程来源链接（GitHub / SkillHub 等）时替代 badge 显示，支持跳转 + 复制 */
     .repo-badge { display: inline-flex; align-items: stretch; max-width: 100%; font-family: var(--mono); font-size: 12px; font-weight: 500; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-soft); margin-bottom: 20px; overflow: hidden; }
     .repo-badge .repo-link { display: inline-flex; align-items: center; gap: 8px; min-width: 0; padding: 6px 12px; color: var(--ink-soft); text-decoration: none; transition: color 140ms, background 140ms; }
     .repo-badge .repo-link:hover { color: var(--accent); background: var(--accent-soft); }
@@ -207,11 +207,15 @@
   <div class="grid">
     <div>
       <div class="repo-badge">
-        <a href="https://github.com/Divem/yuanwen-skills/tree/main/feishu-sync" target="_blank" rel="noopener" class="repo-link" title="在 GitHub 打开">
+        <a href="https://github.com/Divem/yuanwen-skills/tree/main/feishu-sync" target="_blank" rel="noopener" class="repo-link" title="打开来源链接">
+          <!-- 图标按链接域名选择：github.com 用 GitHub 图标；其他远程链接（SkillHub 等）用下方通用链接图标 -->
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <!-- 通用链接图标（非 GitHub 时使用）：
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          -->
           <span class="repo-url">github.com/Divem/yuanwen-skills/tree/main/feishu-sync</span>
         </a>
-        <button class="repo-copy" id="repoCopy" aria-label="复制 GitHub 地址" data-url="https://github.com/Divem/yuanwen-skills/tree/main/feishu-sync">
+        <button class="repo-copy" id="repoCopy" aria-label="复制链接地址" data-url="https://github.com/Divem/yuanwen-skills/tree/main/feishu-sync">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
         </button>
       </div>
