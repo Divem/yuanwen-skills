@@ -1,6 +1,6 @@
 ---
 name: agents-md
-description: 为项目创建和优化 AGENTS.md（AI agent 行为指南文件，Claude Code / Codex 等通用）。两种模式——(1) 初始化：为新项目生成高质量 AGENTS.md + CLAUDE.md，基于痛点驱动最佳实践（动机层 / 通用编码原则 / 项目红线规则 / 命令速查 / 架构 Gotchas / 提交前自检清单）；(2) 诊断：审查现有 AGENTS.md 的 10 个维度（动机、原则检验标准、红线可执行性、命令准确性、Gotchas 信息密度、自检清单可执行性、CLAUDE.md 关系、篇幅结构、文档适配、可维护性），输出分级报告与优化建议。适用于：新建项目需 AGENTS.md、已有 AGENTS.md 想检查质量、AGENTS.md 过时需优化、CLAUDE.md 与 AGENTS.md 内容重复需收敛。触发场景——用户说"初始化/创建/生成/写一份 AGENTS.md""诊断/检查/审查/优化 AGENTS.md""AGENTS.md 写得怎么样/好不好""帮我的项目定 agent 规则""CLAUDE.md 和 AGENTS.md 怎么组织"。
+description: 为项目创建和优化 AGENTS.md（AI agent 行为指南文件，Claude Code / Codex 等通用）。两种模式——(1) 初始化：生成高质量、紧凑的 AGENTS.md + CLAUDE.md，包含动机、通用原则、项目红线、真实命令、架构 Gotchas 与自检清单；(2) 诊断：审查现有 AGENTS.md 的 11 个维度，包括事实准确性、可执行性、单一规则源、篇幅结构、内部去重、时效快照与信息密度，输出分级报告与优化建议。适用于：初始化或重做 AGENTS.md、检查质量与过时内容、精简冗余规则、收敛 CLAUDE.md / GEMINI.md / Cursor 等重复入口。触发场景——用户说"初始化/创建/生成 AGENTS.md""诊断/检查/审查/优化/精简 AGENTS.md""AGENTS.md 写得怎么样""帮项目定 agent 规则""CLAUDE.md 和 AGENTS.md 怎么组织"。
 ---
 
 # AGENTS.md 初始化与诊断
@@ -20,7 +20,7 @@ description: 为项目创建和优化 AGENTS.md（AI agent 行为指南文件，
 
 ## 核心设计理念（两种模式共用）
 
-一份高质量 AGENTS.md 必须做到四点，初始化时主动满足，诊断时对照检查：
+一份高质量 AGENTS.md 必须做到五点，初始化时主动满足，诊断时对照检查：
 
 1. **痛点驱动**：每条规则绑定一个"LLM 写代码的陷阱"，有 Why，不是教条。
 2. **三层分离**：
@@ -29,8 +29,9 @@ description: 为项目创建和优化 AGENTS.md（AI agent 行为指南文件，
    - 项目操作知识层（命令 / Gotchas / 自检）——随项目演化
 3. **可验证**：每条原则都有 `**检验标准：**`，能客观判断"是否遵守"。
 4. **单一规则源**：`CLAUDE.md` 用 `@AGENTS.md` 引用，只补 Claude 特化项，不复制通用规则。
+5. **高信息密度**：每段都应改变 agent 行为；删除内部重复和日期、测试数量、当前错误数等易腐烂快照，详细 SOP 下沉到 `docs/`。
 
-详见 `references/anatomy.md`（13 章节解剖图与取舍决策）和 `references/principles.md`（4 条通用原则全文 + 红线设计指南）。
+详见 `references/anatomy.md`（章节解剖与取舍决策）和 `references/principles.md`（4 条通用原则 + 红线设计指南）。
 
 ---
 
@@ -46,15 +47,15 @@ description: 为项目创建和优化 AGENTS.md（AI agent 行为指南文件，
 
 2. **基于模板填充**：复制 `assets/AGENTS.template.md` 到项目根，替换所有 `{{占位符}}`。搜索 `{{` 定位所有待填项。
 
-3. **通用原则层原样采用**：直接用模板里的 4 条原则 + 检验标准（见 `references/principles.md`），这是跨项目验证的最佳实践，不要自作聪明重写。
+3. **保留通用原则的语义**：保留模板里的 4 条原则与检验标准（见 `references/principles.md`），允许按项目语言和篇幅压缩措辞；不要删除检验标准，也不要在反例表重复原则全文。
 
-4. **项目层按采集信息填**：红线、命令、Gotchas、自检清单——每条都要具体、可执行、带路径。
+4. **项目层按采集信息填**：红线、命令、Gotchas、自检清单——每条都要具体、可执行、带路径。反例优先写项目真实踩坑，通用反例最多保留 1–2 条。
 
-5. **同步生成 CLAUDE.md**：用 `assets/CLAUDE.template.md`，只放 `@AGENTS.md` 引用 + Claude 特化项（slash commands / hooks / 高频自检命令）。检查是否还有 `.cursorrules` / `GEMINI.md` / `.github/copilot-instructions.md` 需收敛到 AGENTS.md。
+5. **同步生成 CLAUDE.md**：默认用 `assets/CLAUDE.template.md` 只写 `@AGENTS.md`。仅当项目有经核实且无法放入共享规则的 Claude 特化项时才追加。检查 `.cursorrules` / `GEMINI.md` / `.github/copilot-instructions.md` 是否也应收敛为薄引用。
 
 6. **信息不足留 TODO**：宁可留 `<!-- TODO: 待补充 -->` 占位让用户填，也不要编造。说明哪些项需要用户补充。
 
-**篇幅控制**：小项目 50–100 行，中型 150–250 行，大型 250–400 行。超 400 行考虑拆分到 `docs/` 并用"关键参考"索引。
+**篇幅控制**：小项目 50–100 行，中型 150–250 行，大型 250–400 行。这是警戒区间，不是合格证明；即使行数达标，也要检查内部重复、时效快照和不改变行为的说明。超 400 行优先拆到 `docs/` 并用“关键参考”索引。
 
 ---
 
@@ -62,20 +63,22 @@ description: 为项目创建和优化 AGENTS.md（AI agent 行为指南文件，
 
 1. **完整读** AGENTS.md 及 CLAUDE.md（确认引用关系）。通览项目结构，识别项目类型与规模。
 
-2. **逐维度执行 10 维度检查**——**必须实际验证，不臆测**：
+2. **逐维度执行 11 维度检查**——**必须实际验证，不臆测**：
    - 命令是否可跑：`cat package.json | jq .scripts` / 读 Makefile / Cargo.toml
    - 文件是否存在：`ls docs/tech/*.md` / `test -f path`
    - 链接是否有效：实际检查"关键参考"里的路径
    - CLAUDE.md 是否与 AGENTS.md 重复：diff 两份文件
+   - AGENTS.md 内部是否重复：对照动机、原则详解、反例、红线与自检，找同义复述
+   - 是否含易腐烂快照：搜索日期、测试数量、当前错误数、"截至/目前/当前"等状态描述
    - commit 规范是否与 git 历史一致：`git log --oneline -20`
 
-   10 维度详见 `references/diagnostic.md`：动机层 / 原则检验标准 / 红线质量 / 命令准确性 / Gotchas 信息密度 / 自检清单可执行性 / CLAUDE.md 关系 / 篇幅结构 / 文档适配 / 可维护性。
+   11 维度详见 `references/diagnostic.md`：动机层 / 原则检验标准 / 红线质量 / 命令准确性 / Gotchas / 自检 / 单一规则源 / 篇幅结构 / 精简度与信息密度 / 文档适配 / 可维护性。
 
 3. **分级**：每个发现标记 🔴 高（致命）/ 🟡 中（重要）/ 🟢 低（优化）。
 
 4. **输出诊断报告**——按 `references/diagnostic.md` 的报告格式：总览（健康度评分）→ 🔴 致命问题 → 🟡 重要问题 → 🟢 优化项 → 亮点 → 修复优先级。每个问题给**具体位置**和**可执行修复建议**，含可直接套用的改写示例。必须有"亮点"段落（告诉用户哪些不用动，避免过度修改）。
 
-5. **优化优先级**（问题多时按此序）：删腐烂 → 补检验标准 → 红线具体化 → 收敛规则源 → 补动机层 → 补反例表 → 补 Gotchas → 拆过载内容。
+5. **优化优先级**（问题多时按此序）：删事实腐烂 → 删除时效快照与内部重复 → 补检验标准 → 红线具体化 → 收敛规则源 → 补动机层 → 补项目反例 → 补 Gotchas → 拆过载内容。
 
 ---
 
@@ -85,13 +88,14 @@ description: 为项目创建和优化 AGENTS.md（AI agent 行为指南文件，
 |---|---|
 | `references/anatomy.md` | 两种模式都需要——初始化时按章节填，诊断时对照查缺。含 13 章节解剖 + 章节取舍决策表 + 好坏示例 |
 | `references/principles.md` | 初始化模式必读——4 条通用原则全文（可直接复制）+ 通用反例表 + 红线四类来源与设计指南 + 项目适配 checklist |
-| `references/diagnostic.md` | 诊断模式必读——10 维度检查矩阵 + 严重度分级 + 常见病症库（6 类）+ 报告输出格式 + 优化优先级 |
+| `references/diagnostic.md` | 诊断模式必读——11 维度检查矩阵 + 严重度分级 + 常见病症库 + 报告输出格式 + 优化优先级 |
 | `assets/AGENTS.template.md` | 初始化模式——复制到项目根作为起点，替换 `{{占位符}}` |
-| `assets/CLAUDE.template.md` | 初始化模式——生成配套 CLAUDE.md（@AGENTS.md 引用 + Claude 特化项） |
+| `assets/CLAUDE.template.md` | 初始化模式——默认生成仅含 `@AGENTS.md` 的薄入口；确有必要时再追加经核实的 Claude 特化项 |
 
 ## 关键约束
 
 - **不臆测**：所有命令、路径、技术栈必须实际核对。填不出的留 TODO 占位。
 - **不破坏既有内容**：诊断模式不直接改写，先报告再按用户指示优化。重做时保留既有真实项目知识。
-- **单一规则源**：通用规则只进 AGENTS.md；CLAUDE.md / .cursorrules / GEMINI.md 收敛为引用。
+- **单一规则源**：通用规则只进 AGENTS.md；CLAUDE.md 默认仅保留 `@AGENTS.md`，其他 agent 入口也尽量收敛为引用。
+- **精简不是删约束**：优先删除重复解释和易腐烂快照，保留会改变行为的红线、Gotchas 与可执行自检。
 - **匹配项目语言**：AGENTS.md 用项目主语言（中文项目用中文，英文项目用英文）。模板是中文，按需转写。
