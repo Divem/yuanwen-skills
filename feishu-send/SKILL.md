@@ -1,3 +1,8 @@
+---
+name: feishu-send
+author: wen.yuan
+---
+
 # Feishu Send Skill
 
 Send files, text, or markdown messages to Feishu (Lark) users or groups via bot.

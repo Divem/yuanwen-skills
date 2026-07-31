@@ -1,5 +1,6 @@
 ---
 name: douyin-search
+author: wen.yuan
 description: >
   Use Playwright to search Douyin (抖音) by keyword and extract video metadata
   (title, author, likes, duration, publish time, URL). Optionally write results
@@ -8,7 +9,6 @@ description: >
   "douyin search", "抓取抖音视频", "抖音爬虫", or asks to search/scrape
   videos from Douyin with a specific keyword.
 ---
-
 # Douyin Keyword Search Scraper
 
 Search Douyin by keyword, extract video metadata, optionally export to Feishu.

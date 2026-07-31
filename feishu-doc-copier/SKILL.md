@@ -1,8 +1,8 @@
 ---
 name: feishu-doc-copier
+author: wen.yuan
 description: 批量复制飞书文档（包括云文档和 Wiki）到指定位置，保持原有格式不变。适用于：1) 复制整套教程/文档到个人空间 2) 备份重要文档 3) 创建文档副本用于协作 4) 跨空间/跨组织迁移文档。支持批量操作，保持 Markdown 格式、标题层级、列表样式等完整不变。
 ---
-
 # 飞书文档批量复制工具
 
 使用 lark-cli 的 `docs +fetch` 和 `docs +update` 命令，批量复制飞书文档。

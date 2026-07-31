@@ -1,5 +1,6 @@
 ---
 name: knowflow-os
+author: wen.yuan
 description: |
   AI-powered knowledge management and content operation system for creators, brands, and content teams.
   Manages the full content lifecycle: information collection to knowledge archiving to topic generation to
@@ -12,7 +13,6 @@ description: |
   Not a traditional CMS. It is an AI-native system where knowledge is grouped by assets, content is
   produced by scenarios, and delivery is managed by channel.
 ---
-
 # KnowFlow OS
 
 ## Overview

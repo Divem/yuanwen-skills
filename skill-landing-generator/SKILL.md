@@ -1,8 +1,8 @@
 ---
 name: skill-landing-generator
+author: wen.yuan
 description: 为 Agent Skill 生成统一的落地页（landing）、手册页（manual）和 SKILL.md 源文档页（source）HTML。基于统一设计规范，确保所有 Skill 介绍页面视觉语言一致。触发场景：(1) 用户要求为某个 skill 生成 landing/介绍页面；(2) 用户要求为某个 skill 生成 manual/手册/文档页面；(3) 用户要求展示或渲染 SKILL.md 原文；(4) 用户要求生成 skill 介绍页、文档页或源码页。输入：skill 名称 + skill 文档内容。输出：三个互相链接的 HTML 文件。
 ---
-
 # Skill Landing Generator
 
 为任意 Agent Skill 生成一组统一风格的 HTML 页面：**落地页** + **手册页** + **SKILL.md 源文档页**。

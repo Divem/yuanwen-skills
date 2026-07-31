@@ -1,9 +1,9 @@
 ---
 name: feishu-doc-download
+author: wen.yuan
 description: 下载飞书文档并转为格式化的本地 Markdown 文件。使用 blocks API 保留标题、列表、加粗、代码块、引用、表格等格式。当用户想下载/保存飞书文档时使用。
 metadata: {"emoji":"📥","requires":{"bins":["python3"]}}
 ---
-
 # 飞书文档下载转 Markdown
 
 将飞书文档通过 Open API 下载，解析 blocks 结构，生成带格式的本地 Markdown 文件。

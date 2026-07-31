@@ -1,8 +1,8 @@
 ---
 name: deploy-and-send
+author: wen.yuan
 description: Build project into a zip and send via Feishu (lark-cli). Use when the user says "deploy", "build and send", "打包发送", "部署并发送", "发给我", "构建并推送", or wants to share the latest build artifact.
 ---
-
 # Deploy and Send
 
 Build project, zip `dist/`, send via Feishu.
