@@ -1,10 +1,11 @@
 ---
 name: douyin-comment-scraper
-author: wen.yuan
 description: >
   抓取抖音视频评论并通过 lark-cli 写入飞书表格。当用户提供抖音视频链接并要求抓取/导出评论、
   获取视频评论区内容、或提到"抖音评论"、"douyin comments"时触发。
   支持有头 Playwright 浏览器模式，需要用户提供登录 cookie。
+metadata:
+  author: wen.yuan
 ---
 # 抖音视频评论抓取
 

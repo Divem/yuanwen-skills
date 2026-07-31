@@ -1,7 +1,8 @@
 ---
 name: feishu-sync
-author: wen.yuan
 description: 双向手动同步本地目录与飞书云文档。支持 init（首次全量推送建立映射）、push（本地变更→飞书）、pull（飞书变更→本地）、status（查看差异）。适用于任意本地目录和飞书文件夹的组合。
+metadata:
+  author: wen.yuan
 ---
 # feishu-sync — 本地目录 ↔ 飞书云文档双向同步
 

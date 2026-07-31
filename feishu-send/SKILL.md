@@ -1,6 +1,7 @@
 ---
 name: feishu-send
-author: wen.yuan
+metadata:
+  author: wen.yuan
 ---
 
 # Feishu Send Skill

@@ -1,7 +1,8 @@
 ---
 name: agents-md
-author: wen.yuan
 description: 为项目创建和优化 AGENTS.md（AI agent 行为指南文件，Claude Code / Codex 等通用）。两种模式——(1) 初始化：生成高质量、紧凑的 AGENTS.md + CLAUDE.md，包含动机、通用原则、项目红线、真实命令、架构 Gotchas 与自检清单；(2) 诊断：审查现有 AGENTS.md 的 11 个维度，包括事实准确性、可执行性、单一规则源、篇幅结构、内部去重、时效快照与信息密度，输出分级报告与优化建议。适用于：初始化或重做 AGENTS.md、检查质量与过时内容、精简冗余规则、收敛 CLAUDE.md / GEMINI.md / Cursor 等重复入口。触发场景——用户说"初始化/创建/生成 AGENTS.md""诊断/检查/审查/优化/精简 AGENTS.md""AGENTS.md 写得怎么样""帮项目定 agent 规则""CLAUDE.md 和 AGENTS.md 怎么组织"。
+metadata:
+  author: wen.yuan
 ---
 # AGENTS.md 初始化与诊断
 

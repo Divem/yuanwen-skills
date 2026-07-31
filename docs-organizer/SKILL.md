@@ -1,7 +1,8 @@
 ---
 name: docs-organizer
-author: wen.yuan
 description: "文档目录管理。Init: 初始化 docs/ 结构。Diagnose: 诊断现有文档。跨工具通用 — 支持 Claude Code、OpenCode、Cursor、Cline 等。仅手动触发。"
+metadata:
+  author: wen.yuan
 ---
 # docs-organizer
 

@@ -1,7 +1,8 @@
 ---
 name: changelog-generator
-author: wen.yuan
 description: 从 AI 编码工具（Claude Code / Codex / OpenCode / Qoder / WorkBuddy）的开发日志、项目变更计划、git 日志中提炼变更，按用户选定的品牌风格生成更新日志，并追加到项目 CHANGELOG.md 顶部。当用户说"写更新日志 / 写 changelog / 写 release notes / 整理这周做了什么 / 发布前生成变更说明 / 汇总开发日志"，或在版本发布、功能上线、周期回顾、迭代总结时需要把近期开发成果整理成对外可读的更新记录，务必使用本 skill。即使没明说"changelog"，只要意图是把散落的开发痕迹提炼成给用户看的更新说明，就应触发。
+metadata:
+  author: wen.yuan
 ---
 # Changelog Generator
 

@@ -1,10 +1,11 @@
 ---
 name: bilibili-comment-crawler
-author: wen.yuan
 description: |
   从B站视频采集评论数据，支持分页获取、子回复展开、写入飞书表格。
   当用户提到"采集B站评论"、"获取B站评论"、"爬取bilibili评论"、"B站评论导出"、
   "bilibili comments"时触发。支持传入BV号或完整URL，需要B站登录cookie。
+metadata:
+  author: wen.yuan
 ---
 # Bilibili Comment Crawler
 

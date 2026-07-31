@@ -1,7 +1,8 @@
 ---
 name: skill-backup
-author: wen.yuan
 description: 备份、同步和恢复自定义 Skills。当用户说"备份 skill"、"备份技能"、"导出 skill"、"sync skills"、"归档 skill"、"恢复 skill"时触发。支持备份全部自建 skill 或指定 skill。
+metadata:
+  author: wen.yuan
 ---
 # Skill Backup
 
