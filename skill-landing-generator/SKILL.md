@@ -94,13 +94,46 @@ Topbar (sticky, blur backdrop)
 - Source 页 topbar 中链接回落地页和手册页
 - 三个页面放在同一目录，全部使用相对路径
 
-### 6. 更新索引卡片
+### 6. 登记到索引
 
-如果输出目录中存在 `index.html`，并且索引卡片由 Skill 数据生成：
+**生成三件套只完成了一半——页面必须登记进索引，否则谁也找不到它。**
 
-- 为当前 Skill 的数据项设置 `source: true`
+如果输出目录中存在 `index.html`，并且索引卡片由 Skill 数据数组（如 `const SKILLS = [...]`）生成：
+
+**6.1 该 Skill 已在数据数组中**
+
+- 为它的数据项设置 `source: true`
 - 在卡片链接区按 `source` 字段条件渲染 `<a href="{skill-name}-source.html">Source</a>`
 - 不要为尚未生成 Source 页的旧 Skill 显示入口，避免产生 404 链接
+
+**6.2 该 Skill 不在数据数组中（新增 Skill）**
+
+必须新增一条数据项，字段与相邻条目保持一致，典型形态：
+
+```js
+{ name: "{skill-name}", category: "{分类}", source: true, desc: "{一句话描述，与落地页 hero 一致}" }
+```
+
+**不要跳过这一步。** 只生成 HTML 不加数据项，页面虽然存在，但索引页、搜索、以及所有由数据派生的聚合页面（作者专栏、分类视图等）都不会包含它——等于白做。
+
+**6.3 作者归属（如果索引按作者分组）**
+
+检查索引中是否有作者识别规则（如 `AUTHOR_RULES`）能匹配到这个 Skill：
+
+- 能匹配到已有作者 → 无需改动
+- 匹配不到 → 会落进兜底分组（如「待分组」）。若已知出处，在规则表中新增一条匹配规则；有 GitHub 仓库的，同步加进作者 → GitHub 的映射表
+
+### 7. 重新生成派生页面
+
+如果仓库中存在由索引数据派生的静态页面生成器（如 `tools/generate-author-pages.js`），**改完索引数据后必须重跑**，否则派生页面仍是旧数据。
+
+```bash
+node tools/generate-author-pages.js
+```
+
+顺序有依赖：生成器读取的是 `index.html`，所以必须在第 6 步之后执行。
+
+生成器若报告「已有 landing 页但未登记进 SKILLS」，说明第 6.2 步漏做了，回去补。
 
 ## 一致性检查清单
 
@@ -119,5 +152,8 @@ Topbar (sticky, blur backdrop)
 - [ ] `prefers-reduced-motion` 媒体查询已包含
 - [ ] 三个页面互相链接正确，顶部入口文案为 `SKILL.md`
 - [ ] 有 Source 页的索引卡片显示 `Source`，无 Source 页的卡片不显示
+- [ ] **该 Skill 在索引数据数组中有对应条目**（新增 Skill 尤其容易漏）
+- [ ] 索引按作者分组时，该 Skill 能被作者规则正确匹配，未意外落进兜底分组
+- [ ] 存在派生页面生成器时已重跑，且未报告未登记的 landing 页
 - [ ] `<html lang="zh-CN">`，所有文案为中文
 - [ ] 三个页面的 Footer 格式正确：左侧 `© 2026 imyuanwen@gmail.com`，右侧包含「Skill 说明书生成器」GitHub 链接 + 「即刻主页」链接，使用 flex 两端对齐，`border-top` + `max-width: 1240px` 居中
