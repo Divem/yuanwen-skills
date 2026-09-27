@@ -28,6 +28,12 @@ Claude Code 自定义 Skills 合集，用于提升工作效率和自动化任务
 |------|------|------|
 | [knowflow-os](knowflow-os/) | AI 知识管理与内容运营系统 | 🇨🇳 中文 |
 
+### 视频制作
+
+| 技能 | 说明 | 语言 |
+|------|------|------|
+| [jianying-draft](jianying-draft/) | 把视频成片或分轨素材生成剪映专业版可二次编辑的草稿 | 🇨🇳 中文 |
+
 ### 工具
 
 | 技能 | 说明 | 语言 |
@@ -101,6 +107,11 @@ yuanwen-skills/
 ├── feishu-sync/                # 飞书双向同步
 │   ├── SKILL.md
 │   ├── README.md
+│   └── scripts/
+├── jianying-draft/             # 剪映草稿生成
+│   ├── SKILL.md
+│   ├── README.md
+│   ├── references/
 │   └── scripts/
 ├── knowflow-os/                # AI 知识管理与内容运营系统
 │   ├── SKILL.md
